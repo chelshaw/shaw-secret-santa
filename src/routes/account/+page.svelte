@@ -31,6 +31,8 @@
 	};
 </script>
 
+<h1>Your profile</h1>
+<a href="/account/wishlist">Go to wishlist</a>
 <div class="form-widget">
 	<form
 		class="form-widget"
@@ -45,8 +47,8 @@
 		</div>
 
 		<div>
-			<label for="fullName">Full Name</label>
-			<input id="fullName" name="fullName" type="text" value={form?.fullName ?? fullName} />
+			<label for="name">Name</label>
+			<input id="name" name="name" type="text" value={form?.name ?? name} />
 		</div>
 
 		<div>
