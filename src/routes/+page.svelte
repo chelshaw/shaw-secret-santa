@@ -16,7 +16,18 @@
 			view="magic_link"
 			redirectTo={`${data.url}/auth/callback`}
 			showLinks={false}
-			appearance={{ theme: ThemeSupa, style: { input: 'color: #fff' } }}
+			appearance={{
+				theme: ThemeSupa,
+				style: { input: 'color: #fff' },
+				variables: {
+					default: {
+						colors: {
+							brand: '#295823',
+							brandAccent: 'darkred'
+						}
+					}
+				}
+			}}
 		/>
 	</div>
 </div>
