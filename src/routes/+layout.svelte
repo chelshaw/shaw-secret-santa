@@ -40,10 +40,33 @@
 		<div class="snowflake">❅</div>
 		<div class="snowflake">❆</div>
 	</div>
+	<nav>
+		<ul>
+			<li>
+				<a href="/account">Home</a>
+			</li>
+			<li>
+				<a href="/account/wishlist">My wishlist</a>
+			</li>
+		</ul>
+	</nav>
 	<slot />
 </div>
 
 <style>
+	nav {
+		margin: 0 auto;
+		max-width: var(--content-width);
+	}
+	nav ul {
+		padding: 0;
+		list-style: none;
+		display: flex;
+		justify-content: flex-start;
+	}
+	nav li {
+		padding: 8px 12px;
+	}
 	/* customizable snowflake styling */
 	.snowflake {
 		color: #fff;

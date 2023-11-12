@@ -31,39 +31,41 @@
 	};
 </script>
 
-<h1>Your profile</h1>
-<a href="/account/wishlist">Go to wishlist</a>
-<div class="form-widget">
-	<form
-		class="form-widget"
-		method="post"
-		action="?/update"
-		use:enhance={handleSubmit}
-		bind:this={profileForm}
-	>
-		<div>
-			<label for="email">Email</label>
-			<input id="email" type="text" value={session.user.email} disabled />
-		</div>
+<main>
+	<h1>Profile</h1>
+	<a href="/account/wishlist">Go to wishlist</a>
+	<div class="form-widget">
+		<form
+			class="form-widget"
+			method="post"
+			action="?/update"
+			use:enhance={handleSubmit}
+			bind:this={profileForm}
+		>
+			<div>
+				<label for="email">Email</label>
+				<input id="email" type="text" value={session.user.email} disabled />
+			</div>
 
-		<div>
-			<label for="name">Name</label>
-			<input id="name" name="name" type="text" value={form?.name ?? name} />
-		</div>
+			<div>
+				<label for="name">Name</label>
+				<input id="name" name="name" type="text" value={form?.name ?? name} />
+			</div>
 
-		<div>
-			<input
-				type="submit"
-				class="button block primary"
-				value={loading ? 'Loading...' : 'Update'}
-				disabled={loading}
-			/>
-		</div>
-	</form>
+			<div>
+				<input
+					type="submit"
+					class="button block primary"
+					value={loading ? 'Loading...' : 'Update'}
+					disabled={loading}
+				/>
+			</div>
+		</form>
 
-	<form method="post" action="?/signout" use:enhance={handleSignOut}>
-		<div>
-			<button class="button block" disabled={loading}>Sign Out</button>
-		</div>
-	</form>
-</div>
+		<form method="post" action="?/signout" use:enhance={handleSignOut}>
+			<div>
+				<button class="button block" disabled={loading}>Sign Out</button>
+			</div>
+		</form>
+	</div>
+</main>

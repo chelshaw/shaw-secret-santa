@@ -11,10 +11,12 @@ body {
 	--custom-border: 1px solid #333;
 	--custom-border-radius: 5px;
 	--custom-spacing: 5px;
+	--content-width: 600px;
 
 	padding: 0;
 	margin: 0;
 	font-family: var(--custom-font-family);
+	font-size: 18px;
 	/* background-color: var(--custom-bg-color); */
 	background: rgb(4, 0, 66);
 	background: linear-gradient(
@@ -39,6 +41,10 @@ body,
 	overflow-x: hidden;
 }
 
+main {
+	max-width: var(--content-width);
+	margin: 0 auto;
+}
 /* Grid */
 
 .container {

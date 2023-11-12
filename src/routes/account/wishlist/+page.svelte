@@ -1,22 +1,16 @@
 <script lang="ts">
-	import type { PageData, ActionData } from '../$types';
-	import Question from '../../../components/question.svelte';
-	import { tweened } from 'svelte/motion';
-	import { cubicOut } from 'svelte/easing';
-
-	const scrollProgress = tweened(0, {
-		duration: 400,
-		easing: cubicOut
-	});
-	const pctProgress = tweened(0, {
-		duration: 400,
-		easing: cubicOut
-	});
-	$: progress = `${currentIdx + 1} of ${questions.length}`;
+	import type { PageData } from '../$types';
+	$: emptyWishlist =
+		Object.keys(wishlist)
+			.reduce((prev, key) => {
+				prev += wishlist[key] || '';
+				return prev;
+			}, '')
+			.trim() === '';
 	export let data: PageData;
 
 	const wishlist = {
-		need: 'Some default',
+		need: '',
 		hobbies: '',
 		style: '',
 		color: '',
@@ -27,89 +21,20 @@
 		...data.profile?.wishlist
 	};
 
-	const questions = [
-		{ key: 'need', label: 'Is there something specific you want or need?' },
-		{ key: 'hobbies', label: 'What are your hobbies or interests' },
-		{ key: 'style', label: 'How would you describe your style' },
-		{ key: 'genres', label: 'Favorite TV, movie, or book genres?' },
-		{ key: 'brands', label: 'Any specific brands or stores you like to shop from?' },
-		{ key: 'color', label: "What's your favorite color to wear?" },
-		{ key: 'diet', label: 'Any dietary restrictions or preferences?' },
-		{ key: 'pamper', label: 'Do you enjoy pampering yourself?' }
-	];
-	let currentIdx = 0;
-	async function saveProgress() {
-		console.log({ wishlist });
-	}
-	async function handleSubmit(event: { currentTarget: EventTarget & HTMLFormElement }) {
-		// const data = new FormData(event.currentTarget);
-		// for (const key of data.keys()) {
-		// 	console.log(key, data.get(key));
-		// 	wishlist[key] = data.get(key);
-		// }
-		handleNext(1);
-		return;
-	}
-	function handleNext(count: number) {
-		saveProgress();
-		currentIdx = currentIdx + count;
-		scrollProgress.set(currentIdx * -1000);
-		pctProgress.set(currentIdx / (questions.length - 1));
-		const currentQuestionKey = questions[currentIdx].key;
-		document.getElementById(currentQuestionKey)?.focus();
-	}
-	function handleNav(event: CustomEvent<{ num: number }>) {
-		handleNext(event.detail.num);
-	}
-	function handleMessage(event: CustomEvent<{ key: string; answer: string }>) {
-		wishlist[event.detail.key] = event.detail.answer;
-		handleNext(1);
-	}
+	const questions = data.questions;
 </script>
 
 <main>
-	<div class="header">
-		<h1>My wishlist</h1>
-		<p>{progress}</p>
-		<progress value={$pctProgress} />
-	</div>
-	<div class="viewport">
-		<div class="questions" style:top={$scrollProgress + 'px'}>
-			{#each questions as question}
-				<div class="question">
-					<Question
-						on:message={handleMessage}
-						on:navigate={handleNav}
-						{question}
-						answer={wishlist[question.key]}
-					/>
-				</div>
-			{/each}
-			<div class="question">
-				<h2>You're all finished!</h2>
-				(Save)
-			</div>
-		</div>
-	</div>
-
-	<!-- <form
-		method="post"
-		on:submit|preventDefault={handleSubmit}
-		class="question"
-		transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'y' }}
-	>
-		<TextInput label={question.label} key={question.key} bind:value={wishlist[question.key]} />
-		<label for={currentQuestion.key}>{currentQuestion.label}</label>
-		<input
-			type="text"
-			name={currentQuestion.key}
-			id={currentQuestion.key}
-			autofocus
-			bind:value={wishlist[currentQuestion.key]}
-		/>
-		<button type="button" on:click={() => handleNext(-1)}>Previous</button>
-		<button type="submit">Next</button>
-	</form> -->
+	<h1>My wishlist</h1>
+	{#if emptyWishlist}
+		<p>Your wishlist is empty!</p>
+		<a href="/account/wishlist/create">Start now</a>
+	{:else}
+		{#each questions as question}
+			<p>{question.label}</p>
+			<p>{wishlist[question.key]}</p>
+		{/each}
+	{/if}
 </main>
 
 <style>
