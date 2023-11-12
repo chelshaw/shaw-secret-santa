@@ -1,8 +1,9 @@
 <script lang="ts">
-	import type { PageData, ActionData } from '../$types';
-	import Question from '../../../components/question.svelte';
+	import type { PageData } from '../$types';
+	import Question from '../../../../components/question.svelte';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
+	import { supabase } from '@supabase/auth-ui-shared';
 
 	const scrollProgress = tweened(0, {
 		duration: 400,
@@ -16,7 +17,7 @@
 	export let data: PageData;
 
 	const wishlist = {
-		need: 'Some default',
+		need: '',
 		hobbies: '',
 		style: '',
 		color: '',
@@ -26,7 +27,6 @@
 		pamper: '',
 		...data.profile?.wishlist
 	};
-
 	const questions = [
 		{ key: 'need', label: 'Is there something specific you want or need?' },
 		{ key: 'hobbies', label: 'What are your hobbies or interests' },
@@ -38,9 +38,6 @@
 		{ key: 'pamper', label: 'Do you enjoy pampering yourself?' }
 	];
 	let currentIdx = 0;
-	async function saveProgress() {
-		console.log({ wishlist });
-	}
 	async function handleSubmit(event: { currentTarget: EventTarget & HTMLFormElement }) {
 		// const data = new FormData(event.currentTarget);
 		// for (const key of data.keys()) {
@@ -49,6 +46,10 @@
 		// }
 		handleNext(1);
 		return;
+	}
+	async function saveProgress() {
+		console.log({ wishlist });
+		const session = await getSession();
 	}
 	function handleNext(count: number) {
 		saveProgress();
@@ -72,6 +73,11 @@
 		<h1>My wishlist</h1>
 		<p>{progress}</p>
 		<progress value={$pctProgress} />
+		<!-- {#key currentQuestion}
+		<div class="question">
+			<Question on:message={handleMessage} question={currentQuestion} />
+		</div>
+	{/key} -->
 	</div>
 	<div class="viewport">
 		<div class="questions" style:top={$scrollProgress + 'px'}>
@@ -85,10 +91,6 @@
 					/>
 				</div>
 			{/each}
-			<div class="question">
-				<h2>You're all finished!</h2>
-				(Save)
-			</div>
 		</div>
 	</div>
 
@@ -117,14 +119,19 @@
 		max-width: 600px;
 		margin: 0 auto;
 		display: flex;
-		max-height: 100vh;
+		height: 100vh;
 		flex-direction: column;
+		padding: 0 20px;
+	}
+	.header {
+		flex: 0 1 auto;
 	}
 	label {
 		color: white;
 	}
 	.viewport {
-		height: 70vh;
+		flex: 1 0 auto;
+		/* height: 70vh; */
 		overflow: clip;
 		position: relative;
 	}

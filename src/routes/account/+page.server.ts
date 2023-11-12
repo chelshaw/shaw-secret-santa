@@ -1,20 +1,20 @@
 import { fail, redirect } from '@sveltejs/kit';
 
-export const load = async ({ locals: { supabase, getSession } }) => {
-	const session = await getSession();
+// export const load = async ({ locals: { supabase, getSession } }) => {
+// 	const session = await getSession();
 
-	if (!session) {
-		throw redirect(303, '/');
-	}
+// 	if (!session) {
+// 		throw redirect(303, '/');
+// 	}
 
-	const { data: profile } = await supabase
-		.from('profiles')
-		.select(`name, wishlist`)
-		.eq('user_id', session.user.id)
-		.single();
+// 	const { data: profile } = await supabase
+// 		.from('profiles')
+// 		.select(`name, wishlist`)
+// 		.eq('user_id', session.user.id)
+// 		.single();
 
-	return { session, profile };
-};
+// 	return { session, profile };
+// };
 
 export const actions = {
 	update: async ({ request, locals: { supabase, getSession } }) => {

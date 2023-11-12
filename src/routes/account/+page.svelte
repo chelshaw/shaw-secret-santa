@@ -11,7 +11,7 @@
 
 	let profileForm: HTMLFormElement;
 	let loading = false;
-	let fullName: string = profile?.name ?? '';
+	let name: string = profile?.name ?? '';
 	let wishlist: object = profile?.wishlist ?? '';
 
 	console.log({ wishlist });

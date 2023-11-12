@@ -25,7 +25,7 @@
 	<title>Shaw Secret Santa</title>
 </svelte:head>
 
-<div class="container" style="padding: 50px 0 100px 0">
+<div>
 	<div class="snowflakes" aria-hidden="true">
 		<div class="snowflake">❅</div>
 		<div class="snowflake">❆</div>
