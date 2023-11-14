@@ -43,7 +43,7 @@
 	<nav>
 		<ul>
 			<li>
-				<a href="/account">Home</a>
+				<a href="/account">Profile</a>
 			</li>
 			<li>
 				<a href="/account/wishlist">My wishlist</a>
@@ -63,9 +63,10 @@
 		list-style: none;
 		display: flex;
 		justify-content: flex-start;
+		align-items: baseline;
 	}
 	nav li {
-		padding: 8px 12px;
+		padding: 8px 12px 8px 0;
 	}
 	/* customizable snowflake styling */
 	.snowflake {

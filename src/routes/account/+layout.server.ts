@@ -12,6 +12,17 @@ export interface Profile {
 	pamper: string;
 	[key: string]: string;
 }
+const defaultProfile = {
+	name: '',
+	need: '',
+	hobbies: '',
+	style: '',
+	genres: '',
+	brands: '',
+	color: '',
+	diet: '',
+	pamper: ''
+};
 export const load = async ({ locals: { supabase, getSession } }) => {
 	const session = await getSession();
 
@@ -19,11 +30,18 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 		throw redirect(303, '/');
 	}
 
-	const { data } = await supabase
+	let profile: Profile;
+	const { data, error } = await supabase
 		.from('profiles')
 		.select(`name,need,hobbies,style,color,genres,brands,diet,pamper`)
 		.eq('user_id', session.user.id)
 		.single();
+
+	if (error) {
+		profile = defaultProfile;
+	} else {
+		profile = data as Profile;
+	}
 
 	const questions = [
 		{ key: 'need', label: 'Is there something specific you want or need?' },
@@ -38,7 +56,7 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 
 	return {
 		session,
-		profile: data as Profile,
+		profile,
 		questions
 	};
 };

@@ -3,13 +3,11 @@
 	import Question from '../../../../components/question.svelte';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
-	import { onMount } from 'svelte';
 
 	export let data: PageData;
-	export let form: FormData;
-	$: progress = `${currentIdx} of ${questions.length}`;
 	const questions = data.questions;
 	let currentIdx = 0;
+	$: progress = `${currentIdx} of ${questions.length}`;
 
 	const scrollProgress = tweened(0, {
 		duration: 400,
@@ -24,7 +22,7 @@
 		currentIdx = currentIdx + count;
 		scrollProgress.set(currentIdx * -1000);
 		pctProgress.set(currentIdx / questions.length);
-		if (currentIdx < questions.length) {
+		if (currentIdx < questions.length && currentIdx > 0) {
 			const currentQuestionKey = questions[currentIdx - 1].key;
 			document.getElementById(currentQuestionKey)?.focus();
 		}
@@ -70,12 +68,11 @@
 
 <style>
 	main {
-		max-width: 600px;
+		max-width: var(--content-width);
 		margin: 0 auto;
 		display: flex;
 		height: 100vh;
 		flex-direction: column;
-		padding: 0 20px;
 	}
 	.header {
 		flex: 0 1 auto;
