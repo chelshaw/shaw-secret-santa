@@ -1,5 +1,17 @@
 import { redirect } from '@sveltejs/kit';
 
+export interface Profile {
+	name: string;
+	need: string;
+	hobbies: string;
+	style: string;
+	genres: string;
+	brands: string;
+	color: string;
+	diet: string;
+	pamper: string;
+	[key: string]: string;
+}
 export const load = async ({ locals: { supabase, getSession } }) => {
 	const session = await getSession();
 
@@ -7,9 +19,9 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 		throw redirect(303, '/');
 	}
 
-	const { data: profile } = await supabase
+	const { data } = await supabase
 		.from('profiles')
-		.select(`name, wishlist`)
+		.select(`name,need,hobbies,style,color,genres,brands,diet,pamper`)
 		.eq('user_id', session.user.id)
 		.single();
 
@@ -24,5 +36,9 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 		{ key: 'pamper', label: 'Do you enjoy pampering yourself?' }
 	];
 
-	return { session, profile, questions };
+	return {
+		session,
+		profile: data as Profile,
+		questions
+	};
 };

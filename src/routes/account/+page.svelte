@@ -8,13 +8,18 @@
 
 	let { session, supabase, profile } = data;
 	$: ({ session, supabase, profile } = data);
+	$: emptyWishlist =
+		Object.keys(data.questions || {})
+			.reduce((prev, key) => {
+				prev += profile ? profile[key] || '' : '';
+				return prev;
+			}, '')
+			.trim() === '';
 
 	let profileForm: HTMLFormElement;
 	let loading = false;
 	let name: string = profile?.name ?? '';
-	let wishlist: object = profile?.wishlist ?? '';
 
-	console.log({ wishlist });
 	const handleSubmit: SubmitFunction = () => {
 		loading = true;
 		return async () => {
@@ -32,8 +37,12 @@
 </script>
 
 <main>
-	<h1>Profile</h1>
-	<a href="/account/wishlist">Go to wishlist</a>
+	<h1>Profile {emptyWishlist}</h1>
+	{#if emptyWishlist}
+		<div class="info">
+			Your wishlist is empty! <a href="/account/wishlist/create">Fill it out now</a>.
+		</div>
+	{/if}
 	<div class="form-widget">
 		<form
 			class="form-widget"
@@ -69,3 +78,16 @@
 		</form>
 	</div>
 </main>
+
+<style>
+	.info {
+		background: aliceblue;
+		border: 1px solid rgb(43, 89, 168);
+		border-radius: 0.5em;
+		color: rgb(4, 0, 66);
+		padding: 1rem;
+	}
+	.info a {
+		color: rgb(4, 0, 66);
+	}
+</style>

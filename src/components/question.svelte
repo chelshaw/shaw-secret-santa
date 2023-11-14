@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
+	import { enhance } from '$app/forms';
+	import type { KeyboardEventHandler } from 'svelte/elements';
 
 	export let question: { label: string; key: string };
-	const dispatch = createEventDispatcher();
-	let ref: HTMLElement;
 	export let answer = '';
+	let errorMessage = '';
+	let ref: HTMLElement;
+	const dispatch = createEventDispatcher();
 
 	onMount(() => {
 		resize();
@@ -30,38 +33,66 @@
 		ref.style.height = '0';
 		ref.style.height = ref.scrollHeight + 12 + 'px';
 	}
-	interface FormChild extends KeyboardEvent {
-		target: {
-			form: EventTarget;
-		};
-	}
-	async function handleKeydown(event: FormChild) {
-		if (event.key !== 'Enter') return;
-
+	async function handleKeydown(
+		event: KeyboardEvent & { currentTarget: EventTarget & HTMLTextAreaElement }
+	) {
+		const shouldSubmit = event.key === 'Enter' && !event.shiftKey;
+		if (!shouldSubmit) return;
 		event.preventDefault();
 		const submitEvent = new Event('submit', { cancelable: true });
-		event.target?.form.dispatchEvent(submitEvent);
+		event.currentTarget?.form?.dispatchEvent(submitEvent);
 	}
 </script>
 
-<form method="post" on:submit|preventDefault={handleQuestion} class="question">
+<form
+	method="post"
+	action="/account/wishlist?/update"
+	class="question"
+	use:enhance={({ formData }) => {
+		return async ({ result }) => {
+			errorMessage = '';
+			if (result.status === 200) {
+				const val = formData.get(question.key);
+				dispatch('message', {
+					key: question.key,
+					answer: val
+				});
+			} else {
+				errorMessage = 'Something went wrong updating your wishlist. Please try again later.';
+			}
+		};
+	}}
+>
 	<label for={question.key}>{question.label}</label>
-	<!-- <input type="text" name={question.key} id={question.key} /> -->
 	<textarea
-		value={answer}
+		bind:value={answer}
 		name={question.key}
 		id={question.key}
 		on:keydown={handleKeydown}
 		on:input={resize}
 		bind:this={ref}
 	/>
+	<input name="key" value={question.key} type="hidden" />
+	<p class="instruction">Shift + Enter to make a new line</p>
+	{#if errorMessage}
+		<div class="error">{errorMessage}</div>
+	{/if}
 	<button type="button" on:click={() => handleNext(-1)}>Previous</button>
 	<button type="submit">Next</button>
 </form>
 
 <style>
-	form {
-		/* padding: 20px; */
+	.instruction {
+		font-size: 0.8em;
+		color: rgb(195, 227, 255);
+	}
+	.error {
+		background: #ffb6b6;
+		border: 1px solid rgb(206, 21, 21);
+		border-radius: 0.5em;
+		color: rgb(56, 1, 1);
+		padding: 1rem;
+		margin: 6px 0;
 	}
 	label {
 		color: white;
