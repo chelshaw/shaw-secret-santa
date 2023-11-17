@@ -1,33 +1,34 @@
 <script lang="ts">
-	import { Auth } from '@supabase/auth-ui-svelte';
-	import { ThemeSupa } from '@supabase/auth-ui-shared';
+	import type { ActionData } from './$types';
+	import Error from '../components/error.svelte';
 
-	export let data;
+	export let form: ActionData;
+	let email = form?.email || '';
+	let otp = '';
+	console.log({ form });
 </script>
 
 <svelte:head>
-	<title>User Management</title>
+	<title>🎅🏻 Shaw Secret Santa 2023 🎅🏾</title>
 </svelte:head>
 
-<div class="row flex-center flex">
-	<div class="block">
-		<Auth
-			supabaseClient={data.supabase}
-			view="magic_link"
-			redirectTo={`${data.url}/auth/callback`}
-			showLinks={false}
-			appearance={{
-				theme: ThemeSupa,
-				style: { input: 'color: #fff' },
-				variables: {
-					default: {
-						colors: {
-							brand: '#295823',
-							brandAccent: 'darkred'
-						}
-					}
-				}
-			}}
-		/>
-	</div>
-</div>
+<main>
+	{#if form?.email}
+		<h2>Check your email for the log-in code</h2>
+		<form class="block" method="POST" action="?/verify">
+			<label for="otp">OTP</label>
+			<input id="otp" name="otp" value={otp} type="text" />
+			<input id="email" name="email" value={email} type="hidden" />
+			<input type="submit" value="Sign in" />
+		</form>
+	{:else}
+		<form class="block" method="POST" action="?/login">
+			<label for="email">Email</label>
+			<input id="email" name="email" value={email} type="email" />
+			<input type="submit" value="Sign in" />
+			{#if form?.error}
+				<Error>{form?.error}</Error>
+			{/if}
+		</form>
+	{/if}
+</main>

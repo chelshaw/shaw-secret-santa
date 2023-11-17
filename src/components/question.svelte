@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { enhance } from '$app/forms';
-	import type { KeyboardEventHandler } from 'svelte/elements';
+	import Error from './error.svelte';
 
 	export let question: { label: string; key: string };
 	export let answer = '';
@@ -15,15 +15,15 @@
 		return () => {};
 	});
 
-	async function handleQuestion(event: { currentTarget: EventTarget & HTMLFormElement }) {
-		const data = new FormData(event.currentTarget);
-		const answer = data.get(question.key);
+	// async function handleQuestion(event: { currentTarget: EventTarget & HTMLFormElement }) {
+	// 	const data = new FormData(event.currentTarget);
+	// 	const answer = data.get(question.key);
 
-		dispatch('message', {
-			key: question.key,
-			answer
-		});
-	}
+	// 	dispatch('message', {
+	// 		key: question.key,
+	// 		answer
+	// 	});
+	// }
 	function handleNext(idx: number) {
 		dispatch('navigate', {
 			num: idx
@@ -75,7 +75,7 @@
 	<input name="key" value={question.key} type="hidden" />
 	<p class="instruction">Shift + Enter to make a new line</p>
 	{#if errorMessage}
-		<div class="error">{errorMessage}</div>
+		<Error>{errorMessage}</Error>
 	{/if}
 	<button type="button" on:click={() => handleNext(-1)}>Previous</button>
 	<button class="primary" type="submit">Next</button>
@@ -85,14 +85,6 @@
 	.instruction {
 		font-size: 0.8em;
 		color: rgb(195, 227, 255);
-	}
-	.error {
-		background: #ffb6b6;
-		border: 1px solid rgb(206, 21, 21);
-		border-radius: 0.5em;
-		color: rgb(56, 1, 1);
-		padding: 1rem;
-		margin: 6px 0;
 	}
 	label {
 		color: white;
