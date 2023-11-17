@@ -3,7 +3,6 @@
 	import '../styles.css';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
-	// import { SvelteUIProvider } from '@svelteuidev/core';
 
 	export let data;
 
@@ -166,5 +165,11 @@
 		left: 65%;
 		-webkit-animation-delay: 4s, 2.5s;
 		animation-delay: 4s, 2.5s;
+	}
+	@media (prefers-reduced-motion) {
+		.snowflake {
+			animation: none;
+			display: none;
+		}
 	}
 </style>
