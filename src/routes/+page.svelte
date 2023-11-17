@@ -5,7 +5,6 @@
 	export let form: ActionData;
 	let email = form?.email || '';
 	let otp = '';
-	console.log({ form });
 </script>
 
 <svelte:head>

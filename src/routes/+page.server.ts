@@ -17,7 +17,6 @@ export const actions = {
 	login: async ({ request, locals: { supabase } }) => {
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
-		console.log('email', email);
 
 		const { error } = await supabase.auth.signInWithOtp({
 			email,
