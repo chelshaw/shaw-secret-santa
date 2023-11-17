@@ -92,7 +92,7 @@
 					<h2>Wishlist:</h2>
 					{#each data.questions as question}
 						<div>
-							<label>{question.label}</label>
+							<p>{question.label}</p>
 							<p>{data.profile[question.key] || '- no answer -'}</p>
 						</div>
 					{/each}
@@ -127,7 +127,7 @@
 
 <style>
 	.info {
-		background: rgba(43, 89, 168, 1);
+		background: rgb(150, 181, 235);
 		border: 1px solid rgb(43, 89, 168);
 		border-radius: 0.5em;
 		color: rgb(0, 0, 6);
