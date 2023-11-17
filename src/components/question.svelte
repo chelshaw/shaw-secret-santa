@@ -86,9 +86,6 @@
 		font-size: 0.8em;
 		color: rgb(195, 227, 255);
 	}
-	label {
-		color: white;
-	}
 	textarea {
 		display: block;
 		width: 100%;

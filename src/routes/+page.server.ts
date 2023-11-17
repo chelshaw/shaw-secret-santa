@@ -50,7 +50,8 @@ export const actions = {
 
 		if (error) {
 			return fail(500, {
-				email
+				email,
+				verifyError: error.message
 			});
 		}
 

@@ -37,7 +37,6 @@
 
 <main>
 	<div class="header">
-		<h1>My wishlist</h1>
 		{#if currentIdx > 0 && currentIdx < questions.length + 1}
 			<div class="progress">
 				<p>{progress}</p>
@@ -66,7 +65,15 @@
 					/>
 				</div>
 			{/each}
-			<div class="question">All done!</div>
+			<div class="question">
+				<h2>All done!</h2>
+				<p>
+					Feel free to come back and edit your answers anytime from your <a href="/account"
+						>profile</a
+					>.
+				</p>
+				<a href="/account" class="button primary">Finish</a>
+			</div>
 		</div>
 	</div>
 </main>

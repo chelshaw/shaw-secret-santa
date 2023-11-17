@@ -1,7 +1,6 @@
 <!-- src/routes/account/+page.svelte -->
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { updated } from '$app/stores';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { fade } from 'svelte/transition';
 
@@ -39,10 +38,9 @@
 </script>
 
 <main>
-	<h1>Profile</h1>
 	{#if !profile.name}
 		<div transition:fade={{ delay: 50, duration: 300 }}>
-			<p>Hey! What's your name?</p>
+			<h2>Hey! What's your name?</h2>
 			<form
 				class="form-widget"
 				method="post"
@@ -66,7 +64,7 @@
 		</div>
 	{:else if emptyWishlist}
 		<div transition:fade={{ delay: 150, duration: 300 }}>
-			<h2>🎅🏻 Welcome {profile.name}! 🎅🏻</h2>
+			<h2>🎅🏻 Welcome, {profile.name}! 🎅🏻</h2>
 			{#if emptyWishlist}
 				<div class="info">
 					Your wishlist is empty! <a href="/account/wishlist/create">Fill it out now</a>.
@@ -91,7 +89,13 @@
 						<label for="email">Email</label>
 						<input id="email" type="email" value={session.user.email} disabled />
 					</div>
-
+					<h2>Wishlist:</h2>
+					{#each data.questions as question}
+						<div>
+							<label>{question.label}</label>
+							<p>{data.profile[question.key] || '- no answer -'}</p>
+						</div>
+					{/each}
 					<div>
 						<input
 							type="submit"
@@ -99,12 +103,6 @@
 							value={loading ? 'Loading...' : 'Update'}
 							disabled={loading}
 						/>
-					</div>
-				</form>
-
-				<form method="post" action="?/signout" use:enhance={handleSignOut}>
-					<div>
-						<button class="button block" disabled={loading}>Sign Out</button>
 					</div>
 				</form>
 			</div>
@@ -120,6 +118,11 @@
 			{/each}
 		</ul>
 	</div>
+	<form method="post" action="?/signout" use:enhance={handleSignOut}>
+		<div>
+			<button class="button block" disabled={loading}>Sign Out</button>
+		</div>
+	</form>
 </main>
 
 <style>
@@ -132,9 +135,6 @@
 	}
 	.info a {
 		color: rgb(4, 0, 66);
-	}
-	label {
-		color: white;
 	}
 	input[type='text'],
 	input[type='email'] {
