@@ -48,8 +48,13 @@
 	<div class="viewport">
 		<div class="questions" style:top={$scrollProgress + 'px'}>
 			<div class="question">
-				<p>Intro!</p>
-				<button on:click={() => handleNext(1)}>Next</button>
+				<h2>Welcome!</h2>
+				<p>
+					Answer as many of these questions as you like. Feel free to come back and update your
+					answers any time between now and Thanksgiving. Once matches are made we will send out
+					communication with the wishlist for you to work with.
+				</p>
+				<button class="primary" on:click={() => handleNext(1)}>Start</button>
 			</div>
 			{#each questions as question}
 				<div class="question">

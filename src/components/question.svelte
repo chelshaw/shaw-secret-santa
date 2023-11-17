@@ -78,7 +78,7 @@
 		<div class="error">{errorMessage}</div>
 	{/if}
 	<button type="button" on:click={() => handleNext(-1)}>Previous</button>
-	<button type="submit">Next</button>
+	<button class="primary" type="submit">Next</button>
 </form>
 
 <style>

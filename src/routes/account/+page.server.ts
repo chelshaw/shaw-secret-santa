@@ -1,5 +1,25 @@
 import { fail, redirect } from '@sveltejs/kit';
 
+export const load = async ({ locals: { supabase, getSession } }) => {
+	const session = await getSession();
+
+	if (!session) {
+		throw redirect(303, '/');
+	}
+
+	const { data, error } = await supabase.from('profiles').select(`name`);
+
+	if (error) {
+		fail(500, {
+			list: 'unable to retrieve list'
+		});
+	}
+
+	return {
+		santas: data
+	};
+};
+
 export const actions = {
 	update: async ({ request, locals: { supabase, getSession } }) => {
 		const formData = await request.formData();

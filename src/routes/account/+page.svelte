@@ -7,9 +7,8 @@
 
 	export let data;
 	export let form;
-
-	let { session, supabase, profile } = data;
-	$: ({ session, supabase, profile } = data);
+	let { session, supabase, profile, santas } = data;
+	$: ({ session, supabase, profile, santas } = data);
 	$: emptyWishlist =
 		data.questions
 			.reduce((prev, q) => {
@@ -17,7 +16,7 @@
 				return prev;
 			}, '')
 			.trim() === '';
-
+	$: santaList = (santas || [])?.filter((santa) => santa.name !== profile.name);
 	let profileForm: HTMLFormElement;
 	let loading = false;
 	let name: string = profile?.name ?? '';
@@ -111,14 +110,24 @@
 			</div>
 		</div>
 	{/if}
+	<div>
+		<h2>Who else has signed up?</h2>
+		<ul>
+			{#each santaList as santa}
+				<li>{santa.name}</li>
+			{:else}
+				No one else has signed up yet
+			{/each}
+		</ul>
+	</div>
 </main>
 
 <style>
 	.info {
-		background: aliceblue;
+		background: rgba(43, 89, 168, 1);
 		border: 1px solid rgb(43, 89, 168);
 		border-radius: 0.5em;
-		color: rgb(4, 0, 66);
+		color: rgb(0, 0, 6);
 		padding: 1rem;
 	}
 	.info a {

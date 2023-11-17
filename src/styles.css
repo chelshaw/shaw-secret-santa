@@ -8,7 +8,7 @@ body {
 	--custom-color: #fff;
 	--custom-color-brand: #295823;
 	--custom-color-secondary: #666;
-	--custom-border: 1px solid #333;
+	--custom-border: 1px solid #fff;
 	--custom-border-radius: 5px;
 	--custom-spacing: 5px;
 	--content-width: 600px;
@@ -251,9 +251,9 @@ input[disabled] {
 
 button,
 .button {
-	color: var(--custom-color);
-	border: var(--custom-border);
-	background-color: var(--custom-bg-color);
+	color: white;
+	border: 1px solid white;
+	background-color: transparent;
 	display: inline-block;
 	text-align: center;
 	border-radius: var(--custom-border-radius);
@@ -263,11 +263,19 @@ button,
 	font-size: 0.9rem;
 	text-transform: uppercase;
 }
+button:hover,
+.button:hover {
+	background-color: rgba(255, 255, 255, 0.2);
+}
 
 button.primary,
 .button.primary {
-	background-color: var(--custom-color-brand);
-	border: 1px solid var(--custom-color-brand);
+	color: rgb(4, 0, 66);
+	background-color: rgba(255, 255, 255, 1);
+}
+button.primary:hover,
+.button.primary:hover {
+	background-color: rgba(255, 255, 255, 0.8);
 }
 
 /* Widgets */
