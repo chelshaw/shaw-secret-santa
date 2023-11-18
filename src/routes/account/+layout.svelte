@@ -8,7 +8,7 @@
 			<a href="/account">Profile</a>
 		</li>
 		<li aria-current={$page.url.pathname === '/account/wishlist' ? 'page' : undefined}>
-			<a href="/account/wishlist">My wishlist</a>
+			<a href="/account/wishlist">Wishlist</a>
 		</li>
 	</ul>
 </nav>
@@ -18,9 +18,11 @@
 	nav {
 		margin: 0 auto;
 		max-width: var(--content-width);
+		padding: 0 24px;
 	}
 	nav ul {
 		padding: 0;
+		margin: 0;
 		list-style: none;
 		display: flex;
 		justify-content: flex-start;

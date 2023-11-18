@@ -3,10 +3,11 @@
 	import { enhance } from '$app/forms';
 	import Error from './error.svelte';
 
-	export let question: { label: string; key: string; subtext: string };
+	export let question: { label: string; key: string };
 	export let answer = '';
-	let errorMessage = '';
 	let ref: HTMLElement;
+	let errorMessage = '';
+	let saved = false;
 	const dispatch = createEventDispatcher();
 
 	onMount(() => {
@@ -15,15 +16,6 @@
 		return () => {};
 	});
 
-	// async function handleQuestion(event: { currentTarget: EventTarget & HTMLFormElement }) {
-	// 	const data = new FormData(event.currentTarget);
-	// 	const answer = data.get(question.key);
-
-	// 	dispatch('message', {
-	// 		key: question.key,
-	// 		answer
-	// 	});
-	// }
 	function handleNext(idx: number) {
 		dispatch('navigate', {
 			num: idx
@@ -31,14 +23,11 @@
 	}
 	function resize() {
 		ref.style.height = '0';
-		ref.style.height = ref.scrollHeight + 12 + 'px';
+		ref.style.height = ref.scrollHeight + 6 + 'px';
 	}
 	async function handleKeydown(
-		event: KeyboardEvent & { currentTarget: EventTarget & HTMLTextAreaElement }
+		event: FocusEvent & { currentTarget: EventTarget & HTMLTextAreaElement }
 	) {
-		const shouldSubmit = event.key === 'Enter' && !event.shiftKey;
-		if (!shouldSubmit) return;
-		event.preventDefault();
 		const submitEvent = new Event('submit', { cancelable: true });
 		event.currentTarget?.form?.dispatchEvent(submitEvent);
 	}
@@ -52,44 +41,50 @@
 		return async ({ result }) => {
 			errorMessage = '';
 			if (result.status === 200) {
-				const val = formData.get(question.key);
-				dispatch('message', {
-					key: question.key,
-					answer: val
-				});
+				saved = true;
+				await setTimeout(() => {
+					saved = false;
+				}, 3000);
 			} else {
 				errorMessage = 'Something went wrong updating your wishlist. Please try again later.';
 			}
 		};
 	}}
 >
+	{#if saved}
+		<span class="saved">✅ Saved</span>
+	{/if}
+	<input name="key" value={question.key} type="hidden" />
 	<label for={question.key}>{question.label}</label>
-	<span class="subtext">{question.subtext}</span>
 	<textarea
 		bind:value={answer}
 		name={question.key}
 		id={question.key}
-		on:keydown={handleKeydown}
+		on:blur={handleKeydown}
 		on:input={resize}
 		bind:this={ref}
+		placeholder="No answer"
 	/>
-	<input name="key" value={question.key} type="hidden" />
-	<p class="instruction">Shift + Enter to make a new line</p>
 	{#if errorMessage}
 		<Error>{errorMessage}</Error>
 	{/if}
-	<button type="button" on:click={() => handleNext(-1)}>Previous</button>
-	<button class="primary" type="submit">Next</button>
 </form>
 
 <style>
-	.subtext {
-		font-style: italic;
-		color: rgba(195, 227, 255, 0.8);
+	form {
+		position: relative;
+		margin: 8px 0 24px 0;
+	}
+	.saved {
+		position: absolute;
+		top: 0;
+		right: 0;
+		color: #ffffff;
+		font-size: 0.8em;
 	}
 	.instruction {
 		font-size: 0.8em;
-		color: rgba(195, 227, 255, 0.8);
+		color: rgb(195, 227, 255);
 	}
 	textarea {
 		display: block;
@@ -97,14 +92,12 @@
 		font-family: inherit;
 		color: white;
 		background-color: transparent;
-		border: none;
+		border: 1px solid white;
 		box-shadow: none;
-		font-size: 30px;
 		outline: none;
-		border-bottom: 2px solid white;
-		padding: 12px 0;
-		margin: 18px 0;
+		padding: 8px;
 		resize: none;
+		border-radius: 6px;
 	}
 	/* textarea:focus {
 		border: none;

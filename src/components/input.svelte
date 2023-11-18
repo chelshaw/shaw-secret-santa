@@ -3,10 +3,16 @@
 	export let value = '';
 	export let name = '';
 	export let type = 'text';
+	export let disabled = false;
 </script>
 
-<label for={name}>{label}</label>
-<input id={name} {name} {value} {type} />
+{#if disabled}
+	<label for={name}>{label}</label>
+	<input id={name} {name} {value} {type} disabled />
+{:else}
+	<label for={name}>{label}</label>
+	<input id={name} {name} {value} {type} />
+{/if}
 
 <style>
 	input[type='text'],
@@ -14,5 +20,6 @@
 		background: transparent;
 		color: white;
 		margin-bottom: 24px;
+		padding: 8px;
 	}
 </style>

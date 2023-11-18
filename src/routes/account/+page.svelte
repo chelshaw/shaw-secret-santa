@@ -1,6 +1,7 @@
 <!-- src/routes/account/+page.svelte -->
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Input from '../../components/input.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { fade } from 'svelte/transition';
 
@@ -18,7 +19,7 @@
 	$: santaList = (santas || [])?.filter((santa) => santa.name !== profile.name);
 	let profileForm: HTMLFormElement;
 	let loading = false;
-	let name: string = profile?.name ?? '';
+	let name: string = form?.name ?? profile?.name ?? '';
 
 	const handleSubmit: SubmitFunction = () => {
 		loading = true;
@@ -41,17 +42,8 @@
 	{#if !profile.name}
 		<div transition:fade={{ delay: 50, duration: 300 }}>
 			<h2>Hey! What's your name?</h2>
-			<form
-				class="form-widget"
-				method="post"
-				action="?/update"
-				use:enhance={handleSubmit}
-				bind:this={profileForm}
-			>
-				<div>
-					<label for="name">Name</label>
-					<input id="name" name="name" type="text" value={form?.name ?? name} />
-				</div>
+			<form method="post" action="?/update" use:enhance={handleSubmit} bind:this={profileForm}>
+				<Input name="name" value={name} label="Name" />
 				<div>
 					<input
 						type="submit"
@@ -73,42 +65,24 @@
 		</div>
 	{:else}
 		<div transition:fade={{ delay: 150, duration: 300 }}>
-			<div class="form-widget">
-				<form
-					class="form-widget"
-					method="post"
-					action="?/update"
-					use:enhance={handleSubmit}
-					bind:this={profileForm}
-				>
-					<div>
-						<label for="name">Name</label>
-						<input id="name" name="name" type="text" value={form?.name ?? name} />
-					</div>
-					<div>
-						<label for="email">Email</label>
-						<input id="email" type="email" value={session.user.email} disabled />
-					</div>
-					<h2>Wishlist:</h2>
-					{#each data.questions as question}
-						<div>
-							<p>{question.label}</p>
-							<p>{data.profile[question.key] || '- no answer -'}</p>
-						</div>
-					{/each}
-					<div>
-						<input
-							type="submit"
-							class="button block primary"
-							value={loading ? 'Loading...' : 'Update'}
-							disabled={loading}
-						/>
-					</div>
-				</form>
+			<form method="post" action="?/update" use:enhance={handleSubmit} bind:this={profileForm}>
+				<Input name="name" value={name} label="Name" />
+				<Input name="email" value={session.user.email} label="Email" disabled />
+				<div>
+					<input
+						type="submit"
+						class="button block primary"
+						value={loading ? 'Loading...' : 'Update'}
+						disabled={loading}
+					/>
+				</div>
+			</form>
+			<div>
+				<a href="/account/wishlist" class="button block">Edit wishlist</a>
 			</div>
 		</div>
 	{/if}
-	<div>
+	<div class="santas">
 		<h2>Who else has signed up?</h2>
 		<ul>
 			{#each santaList as santa}
@@ -126,6 +100,14 @@
 </main>
 
 <style>
+	form {
+		margin-bottom: 24px;
+	}
+	.santas {
+		margin: 36px 0;
+		padding: 8px 16px;
+		background: rgba(255, 255, 255, 0.2);
+	}
 	.info {
 		background: rgb(150, 181, 235);
 		border: 1px solid rgb(43, 89, 168);
