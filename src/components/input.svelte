@@ -22,4 +22,8 @@
 		margin-bottom: 24px;
 		padding: 8px;
 	}
+	input:disabled {
+		background: rgba(255, 255, 255, 0.3);
+		color: rgba(255, 255, 255, 0.8);
+	}
 </style>
