@@ -56,8 +56,8 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 		},
 		{
 			key: 'style',
-			label: 'How would you describe your style',
-			subtext: "How does someone know you'll love an item of clothing?"
+			label: 'How would you describe your style?',
+			subtext: "How does someone know you'll love a piece of clothing or home decor?"
 		},
 		{
 			key: 'color',
@@ -72,17 +72,17 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 		{
 			key: 'brands',
 			label: 'Any specific brands or stores you like to shop from?',
-			subtext: 'Think of stores someone is likely to get something you like.'
+			subtext: 'Think of stores someone is likely to pick up something you like.'
 		},
 		{
 			key: 'diet',
 			label: 'Any dietary restrictions or preferences?',
-			subtext: 'Not much to elaborate on here. '
+			subtext: "Pretty self explanitory -- anything you don't eat?"
 		},
 		{
 			key: 'pamper',
 			label: 'Do you enjoy pampering yourself?',
-			subtext: 'If so, what do you like?'
+			subtext: 'If so, what do you like? Scents, sensations, and activities are helpful.'
 		}
 	];
 

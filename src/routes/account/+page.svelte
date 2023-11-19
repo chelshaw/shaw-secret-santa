@@ -64,6 +64,7 @@
 			{/if}
 		</div>
 	{:else}
+		<h1>Profile</h1>
 		<div transition:fade={{ delay: 150, duration: 300 }}>
 			<form method="post" action="?/update" use:enhance={handleSubmit} bind:this={profileForm}>
 				<Input name="name" value={name} label="Name" />
@@ -109,14 +110,14 @@
 		background: rgba(255, 255, 255, 0.2);
 	}
 	.info {
-		background: rgb(150, 181, 235);
-		border: 1px solid rgb(43, 89, 168);
+		background: var(--light-blue);
+		border: 1px solid var(--mid-blue);
 		border-radius: 0.5em;
-		color: rgb(0, 0, 6);
+		color: var(--darkest-blue);
 		padding: 1rem;
 	}
 	.info a {
-		color: rgb(4, 0, 66);
+		color: var(--darkest-blue);
 	}
 	input[type='text'],
 	input[type='email'] {

@@ -72,11 +72,12 @@
 			<div class="question">
 				<h2>All done!</h2>
 				<p>
-					Feel free to come back and edit your answers anytime from your <a href="/account"
-						>profile</a
+					Feel free to come back and edit your answers anytime from your <a
+						data-sveltekit-reload
+						href="/account/wishlist">profile</a
 					>.
 				</p>
-				<a href="/account" class="button primary">Finish</a>
+				<a data-sveltekit-reload href="/account/wishlist" class="button primary">Finish</a>
 			</div>
 		</div>
 	</div>
@@ -200,8 +201,7 @@ Webkit browsers provide two pseudo classes that can be use to style HTML5 progre
 	/* Firefox provides a single pseudo class to style the progress element value and not for container. -moz-progress-bar */
 
 	progress[value]::-moz-progress-bar {
-		/* Gradient background with Stripes */
-		background: rgba(43, 89, 168, 1);
+		background: var(--mid-blue);
 
 		background-size: 35px 20px, 100% 100%, 100% 100%;
 		border-radius: 3px;
