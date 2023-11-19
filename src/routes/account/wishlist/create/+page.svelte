@@ -39,10 +39,15 @@
 	<div class="header">
 		{#if currentIdx > 0 && currentIdx < questions.length + 1}
 			<div class="progress">
-				<p>{progress}</p>
-				<progress value={$pctProgress} />
+				<p class="progress-text">{progress}</p>
+				<progress value={$pctProgress}>
+					<div class="progress-bar">
+						<span style="width: {$pctProgress}%">{$pctProgress}%</span>
+					</div>
+				</progress>
 			</div>
 		{/if}
+		<a class="exit" data-sveltekit-reload href="/account/wishlist">&lt; Exit</a>
 	</div>
 	<div class="viewport">
 		<div class="questions" style:top={$scrollProgress + 'px'}>
@@ -68,11 +73,12 @@
 			<div class="question">
 				<h2>All done!</h2>
 				<p>
-					Feel free to come back and edit your answers anytime from your <a href="/account"
-						>profile</a
+					Feel free to come back and edit your answers anytime from your <a
+						data-sveltekit-reload
+						href="/account/wishlist">profile</a
 					>.
 				</p>
-				<a href="/account" class="button primary">Finish</a>
+				<a data-sveltekit-reload href="/account/wishlist" class="button primary">Finish</a>
 			</div>
 		</div>
 	</div>
@@ -86,8 +92,14 @@
 		height: 100vh;
 		flex-direction: column;
 	}
+	.exit {
+		font-size: 0.8em;
+		padding: 12px 0;
+		color: rgba(255, 255, 255, 0.8);
+	}
 	.header {
 		flex: 0 1 auto;
+		align-items: baseline;
 	}
 	.progress {
 		display: flex;
@@ -98,7 +110,6 @@
 	}
 	.viewport {
 		flex: 1 0 auto;
-		/* height: 70vh; */
 		overflow: clip;
 		position: relative;
 	}
@@ -111,5 +122,115 @@
 	.question {
 		height: 1000px;
 		padding: 24px 0;
+		overflow: scroll;
+	}
+	.progress-text {
+		flex-basis: 60px;
+		min-width: 60px;
+		color: rgba(255, 255, 255, 0.7);
+	}
+	/* Progress Styling */
+
+	progress:not(value) {
+		/* Add your styles here. As part of this walkthrough we will focus only on determinate progress bars. */
+	}
+
+	/* Styling the determinate progress element */
+
+	progress[value] {
+		/* Get rid of the default appearance */
+		appearance: none;
+
+		/* This unfortunately leaves a trail of border behind in Firefox and Opera. We can remove that by setting the border to none. */
+		border: none;
+
+		/* Add dimensions */
+		width: 100%;
+		height: 20px;
+
+		/* Although firefox doesn't provide any additional pseudo class to style the progress element container, any style applied here works on the container. */
+		background-color: rgb(0, 0, 0);
+		border-radius: 3px;
+		box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5) inset;
+
+		/* Of all IE, only IE10 supports progress element that too partially. It only allows to change the background-color of the progress value using the 'color' attribute. */
+		color: royalblue;
+
+		position: relative;
+		margin: 1em 0 1.5em;
+	}
+
+	/*
+Webkit browsers provide two pseudo classes that can be use to style HTML5 progress element.
+-webkit-progress-bar -> To style the progress element container
+-webkit-progress-value -> To style the progress element value.
+*/
+
+	progress[value]::-webkit-progress-bar {
+		background-color: rgb(0, 0, 0);
+		border-radius: 3px;
+		box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5) inset;
+	}
+
+	progress[value]::-webkit-progress-value {
+		position: relative;
+
+		background-size: 35px 20px, 100% 100%, 100% 100%;
+		border-radius: 3px;
+
+		/* Let's animate this */
+		/* animation: animate-stripes 5s linear infinite; */
+	}
+
+	@keyframes animate-stripes {
+		100% {
+			background-position: -100px 0;
+		}
+	}
+
+	/* Let's spice up things little bit by using pseudo elements. */
+
+	progress[value]::-webkit-progress-value:after {
+		/* Only webkit/blink browsers understand pseudo elements on pseudo classes. A rare phenomenon! */
+		content: '';
+		position: absolute;
+
+		width: 5px;
+		height: 5px;
+		top: 7px;
+		right: 7px;
+
+		background-color: white;
+		border-radius: 100%;
+	}
+
+	/* Firefox provides a single pseudo class to style the progress element value and not for container. -moz-progress-bar */
+
+	progress[value]::-moz-progress-bar {
+		background: var(--mid-blue);
+
+		background-size: 35px 20px, 100% 100%, 100% 100%;
+		border-radius: 3px;
+
+		/* Firefox doesn't support CSS3 keyframe animations on progress element. Hence, we did not include animate-stripes in this code block */
+	}
+
+	/* Fallback technique styles */
+	.progress-bar {
+		background-color: #000;
+		border-radius: 3px;
+		box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5) inset;
+
+		/* Dimensions should be similar to the parent progress element. */
+		width: 100%;
+		height: 20px;
+	}
+
+	.progress-bar span {
+		background-color: royalblue;
+		border-radius: 3px;
+
+		display: block;
+		text-indent: -9999px;
 	}
 </style>

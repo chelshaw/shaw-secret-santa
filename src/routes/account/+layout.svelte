@@ -8,7 +8,10 @@
 			<a href="/account">Profile</a>
 		</li>
 		<li aria-current={$page.url.pathname === '/account/wishlist' ? 'page' : undefined}>
-			<a href="/account/wishlist">My wishlist</a>
+			<a href="/account/wishlist">Wishlist</a>
+		</li>
+		<li aria-current={$page.url.pathname === '/account/match' ? 'page' : undefined}>
+			<a href="/account/match">Match</a>
 		</li>
 	</ul>
 </nav>
@@ -16,20 +19,37 @@
 
 <style>
 	nav {
-		margin: 0 auto;
-		max-width: var(--content-width);
+		width: 100%;
+		padding: 12px;
+		background: var(--darkest-blue);
 	}
 	nav ul {
 		padding: 0;
+		margin: 0;
 		list-style: none;
 		display: flex;
 		justify-content: flex-start;
 		align-items: baseline;
+		margin: 0 auto;
+		max-width: var(--content-width);
+		padding: 0 24px;
+	}
+	nav li a {
+		color: inherit;
 	}
 	nav li {
-		padding: 8px 12px 8px 0;
+		padding: 8px 12px;
+		color: white;
+		margin-right: 1rem;
+		transition: all 0.5s ease;
+		border-radius: 5px;
 	}
-	li[aria-current='page'] a {
-		color: rgb(160, 205, 245);
+	nav li:hover {
+		background: var(--light-blue);
+		color: var(--darkest-blue);
+	}
+	li[aria-current='page'] {
+		background-color: var(--light-blue);
+		color: var(--darkest-blue);
 	}
 </style>
