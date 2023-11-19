@@ -47,6 +47,7 @@
 				</progress>
 			</div>
 		{/if}
+		<a class="exit" data-sveltekit-reload href="/account/wishlist">&lt; Exit</a>
 	</div>
 	<div class="viewport">
 		<div class="questions" style:top={$scrollProgress + 'px'}>
@@ -91,6 +92,11 @@
 		height: 100vh;
 		flex-direction: column;
 	}
+	.exit {
+		font-size: 0.8em;
+		padding: 12px 0;
+		color: rgba(255, 255, 255, 0.8);
+	}
 	.header {
 		flex: 0 1 auto;
 		align-items: baseline;
@@ -104,7 +110,6 @@
 	}
 	.viewport {
 		flex: 1 0 auto;
-		/* height: 70vh; */
 		overflow: clip;
 		position: relative;
 	}
@@ -117,6 +122,7 @@
 	.question {
 		height: 1000px;
 		padding: 24px 0;
+		overflow: scroll;
 	}
 	.progress-text {
 		flex-basis: 60px;

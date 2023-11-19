@@ -81,8 +81,8 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 		},
 		{
 			key: 'pamper',
-			label: 'Do you enjoy pampering yourself?',
-			subtext: 'If so, what do you like? Scents, sensations, and activities are helpful.'
+			label: 'How do you enjoy pampering yourself?',
+			subtext: 'What scents, sensations, and activities make you feel relaxed and cared for?'
 		}
 	];
 
