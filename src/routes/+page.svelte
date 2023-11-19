@@ -5,7 +5,7 @@
 <main>
 	<h1>
 		Welcome to<br />
-		🎅🏻 Shaw Secret Santa 2023 🎅🏾
+		🎅🏻🧑🏽‍🎄 Shaw Secret Santa 2023 🧑🏼‍🎄🎅🏾
 	</h1>
 	<div class="row">
 		<div class="dancing">🎄</div>
@@ -19,7 +19,7 @@
 		<div class="dancing">🎄</div>
 		<div class="dancing-rev">🎁</div>
 	</div>
-	<p class="description">If you need an invite, please reach out to Chelsea.</p>
+	<p class="description">If you run into issues, please reach out to Chelsea.</p>
 	<a href="/login" class="button primary">Go to log in</a>
 </main>
 

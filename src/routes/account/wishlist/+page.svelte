@@ -14,23 +14,22 @@
 			.trim() === '';
 
 	const questions = data.questions;
-	let profileForm: HTMLFormElement;
 </script>
 
 <main>
 	<h1>My wishlist</h1>
+	<div class="info">
+		🔖 <strong>Bookmark this page!</strong> You can come back and edit your wishlist any time. Edits
+		are automatically saved.
+	</div>
 	{#if emptyWishlist}
 		<p>Your wishlist is empty!</p>
 		<a class="button primary" href="/account/wishlist/create">Start now</a>
-	{:else}
-		<div class="info">
-			🔖 <strong>Bookmark this page!</strong> You can come back and edit your wishlist any time. Edits
-			are automatically saved.
-		</div>
-		{#each questions as question}
-			<QuestionInput {question} answer={profile[question.key]} />
-		{/each}
+		<hr />
 	{/if}
+	{#each questions as question}
+		<QuestionInput {question} answer={profile[question.key]} />
+	{/each}
 </main>
 
 <style>
@@ -44,5 +43,8 @@
 	}
 	.info strong {
 		color: inherit;
+	}
+	hr {
+		margin: 2em 0;
 	}
 </style>

@@ -83,6 +83,9 @@
 </form>
 
 <style>
+	label {
+		text-transform: uppercase;
+	}
 	.subtext {
 		font-style: italic;
 		color: rgba(195, 227, 255, 0.8);

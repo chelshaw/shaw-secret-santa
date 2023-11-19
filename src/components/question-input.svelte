@@ -75,6 +75,9 @@
 		position: relative;
 		margin: 8px 0 24px 0;
 	}
+	label {
+		font-weight: bold;
+	}
 	.saved {
 		position: absolute;
 		top: 0;
