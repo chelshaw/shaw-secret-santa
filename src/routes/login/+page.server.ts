@@ -22,7 +22,7 @@ export const actions = {
 			email,
 			options: {
 				// set this to false if you do not want the user to be automatically signed up
-				shouldCreateUser: false
+				shouldCreateUser: true
 				// emailRedirectTo: `${url.origin}/auth/callback'
 			}
 		});
