@@ -13,7 +13,7 @@
 
 <main>
 	{#if form?.email}
-		<h1>Check your email for a one-time code</h1>
+		<h1>Check your email ({form.email}) for a one-time code</h1>
 		<p>
 			The email should come from <span class="email">chelshaw.dev@gmail.com</span>. If you do not
 			receive an email after 2 minutes refresh this page and try again.

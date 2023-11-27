@@ -22,6 +22,7 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 
 export const actions = {
 	save: async ({ request, locals: { supabase } }) => {
+		const table = 'matches_2023';
 		const formData = await request.formData();
 		const matchString = formData.get('matches') as string;
 		const matches = JSON.parse(matchString).map((match) => ({
@@ -30,16 +31,20 @@ export const actions = {
 		}));
 
 		// Delete all first
-		// 		const { error } = await supabase
-		//   .from('matches_2023')
-		//   .delete()
+		const { error: deleteError } = await supabase.from(table).delete();
+		if (deleteError) {
+			return fail(500, {
+				matches,
+				error: deleteError.message
+			});
+		}
 
-		const { error } = await supabase.from('matches_2023').insert(matches);
+		const { error } = await supabase.from(table).insert(matches);
 
 		if (error) {
 			return fail(500, {
 				matches,
-				error
+				error: error.message
 			});
 		}
 
