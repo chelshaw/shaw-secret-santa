@@ -1,4 +1,4 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 
 export const load = async ({ locals: { supabase, getSession } }) => {
 	const session = await getSession();
@@ -13,9 +13,10 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 		.eq('santa', session.user.id);
 
 	if (error) {
-		fail(500, {
-			message: 'unable to retrieve match'
-		});
+		return {
+			info: null,
+			error: error.message
+		};
 	}
 
 	if (data && data.length > 0) {
@@ -23,8 +24,9 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 			info: data[0].matchProfile
 		};
 	} else {
-		fail(500, {
-			message: 'no match available'
-		});
+		return {
+			info: null,
+			error: 'no match found'
+		};
 	}
 };

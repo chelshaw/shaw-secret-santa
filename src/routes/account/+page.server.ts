@@ -10,7 +10,7 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 	const { data, error } = await supabase.from('profiles').select(`name`);
 
 	if (error) {
-		fail(500, {
+		return fail(500, {
 			list: 'unable to retrieve list'
 		});
 	}

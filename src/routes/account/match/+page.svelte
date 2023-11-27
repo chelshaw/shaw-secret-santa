@@ -13,7 +13,7 @@
 <main>
 	{#if !info}
 		<h1>You don't have a match</h1>
-		<Error>Please reach out to Chelsea if you think this is a mistake.</Error>
+		<Error>Please reach out to Chelsea if you think this is a mistake. {data.error}</Error>
 	{:else}
 		<h1>Your match is...<br />{info.name}!</h1>
 		<p class="large">
