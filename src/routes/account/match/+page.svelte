@@ -17,11 +17,13 @@
 	{:else}
 		<h1>Your match is...<br />{info.name}!</h1>
 		<p class="large">
-			Below are {info.name}'s responses. Good luck! 🎁
+			Below are {info.name}'s responses.
 		</p>
-		<p class="small">
+		<p class="large">Spend limit is $40.</p>
+		<p class="large">Good luck! 🎁</p>
+		<div class="small">
 			Last updated {new Date(info.updated).toDateString()}
-		</p>
+		</div>
 		<div class="answers">
 			{#each answers as answer}
 				<p class="question">{answer.label}</p>
@@ -39,11 +41,12 @@
 		font-size: 1.2em;
 	}
 	.small {
+		margin-top: 2em;
 		font-style: italic;
-		font-size: 0.8;
+		font-size: 0.7;
 	}
 	.answers {
-		margin: 36px 0;
+		margin: 0;
 		padding: 8px 16px;
 		background: rgba(255, 255, 255, 0.2);
 	}

@@ -15,7 +15,8 @@ export const actions = {
 		const { error } = await supabase
 			.from('profiles')
 			.update({
-				[key]: item
+				[key]: item,
+				updated: new Date()
 			})
 			.eq('user_id', session?.user.id);
 
