@@ -17,16 +17,17 @@
 	{:else}
 		<h1>Your match is...<br />{info.name}!</h1>
 		<p class="large">
-			Below are {info.name}'s responses. Questions they did not answer are not shown. Good luck! 🎁
+			Below are {info.name}'s responses. Good luck! 🎁
 		</p>
-		<p>
-			<em>(P.S. If they update their answers the updated response will show here)</em>
+		<p class="small">
+			Last updated {new Date(info.updated).toDateString()}
 		</p>
-		{#each answers as answer}
-			<hr />
-			<p class="question">{answer.label}</p>
-			<p class="answer"><strong>{answer.answer}</strong></p>
-		{/each}
+		<div class="answers">
+			{#each answers as answer}
+				<p class="question">{answer.label}</p>
+				<p class="answer"><strong>{answer.answer}</strong></p>
+			{/each}
+		</div>
 	{/if}
 </main>
 
@@ -35,10 +36,22 @@
 		text-align: center;
 	}
 	.large {
-		font-size: 1.3em;
+		font-size: 1.2em;
+	}
+	.small {
+		font-style: italic;
+		font-size: 0.8;
+	}
+	.answers {
+		margin: 36px 0;
+		padding: 8px 16px;
+		background: rgba(255, 255, 255, 0.2);
 	}
 	.question {
 		color: rgba(255, 255, 255, 0.8);
+	}
+	.answer {
+		font-size: 1.2em;
 	}
 	hr {
 		border-color: rgba(255, 255, 255, 0.5);

@@ -9,7 +9,7 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 
 	const { data, error } = await supabase
 		.from('matches_2023')
-		.select(`matchProfile:match(name,need,hobbies,style,color,genres,brands,diet,pamper)`)
+		.select(`matchProfile:match(name,need,hobbies,style,color,genres,brands,diet,pamper,updated)`)
 		.eq('santa', session.user.id);
 
 	if (error) {
