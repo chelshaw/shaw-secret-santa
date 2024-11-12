@@ -1,7 +1,6 @@
-// src/routes/+page.server.ts
 import { fail, redirect } from '@sveltejs/kit';
-const KEYPASS = '2024shaws';
 
+const KEYPASS = '2024shaws';
 const PARTICIPANTS = [
 	'Tony',
 	'Christine',
@@ -23,7 +22,10 @@ const PARTICIPANTS = [
 	'Amber',
 	'Lillian',
 	'Travis',
-	'Ella'
+	'Ella',
+	// Zac fam
+	'Denys',
+	'Peter'
 ];
 
 export function load({ cookies }) {
@@ -39,7 +41,7 @@ export const actions = {
 	enter: async ({ request }) => {
 		const formData = await request.formData();
 		const passcode = formData.get('passcode') as string;
-
+		console.log({ passcode });
 		if (passcode !== KEYPASS) {
 			return fail(500, {
 				error: 'incorrect passcode'
@@ -58,7 +60,6 @@ export const actions = {
 				error: 'no name provided'
 			});
 		}
-		cookies.set('allowed', 'true', { path: '/' });
 		cookies.set('name', name, { path: '/' });
 
 		throw redirect(303, '/wishlist');

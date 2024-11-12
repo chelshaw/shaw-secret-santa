@@ -16,11 +16,6 @@
 		return () => {};
 	});
 
-	function handleNext(idx: number) {
-		dispatch('navigate', {
-			num: idx
-		});
-	}
 	function resize() {
 		ref.style.height = '0';
 		ref.style.height = ref.scrollHeight + 6 + 'px';
@@ -35,7 +30,7 @@
 
 <form
 	method="post"
-	action="/account/wishlist?/update"
+	action="/wishlist?/update"
 	class="question"
 	use:enhance={({ formData }) => {
 		return async ({ result }) => {
@@ -82,30 +77,21 @@
 		position: absolute;
 		top: 0;
 		right: 0;
-		color: #ffffff;
+		/* color: #ffffff; */
 		font-size: 0.8em;
-	}
-	.instruction {
-		font-size: 0.8em;
-		color: rgb(195, 227, 255);
 	}
 	textarea {
 		display: block;
 		width: 100%;
 		font-family: inherit;
-		color: white;
-		background-color: transparent;
-		border: 1px solid white;
-		box-shadow: none;
 		outline: none;
 		padding: 8px;
+		margin-top: 8px;
 		resize: none;
 		border-radius: 6px;
+		border: 2px solid transparent;
 	}
-	/* textarea:focus {
-		border: none;
-		-webkit-box-shadow: 0 0 20px white;
-		-moz-box-shadow: 0 0 20px white;
-		box-shadow: 0 0 20px white;
-	} */
+	textarea:focus {
+		border: 2px dashed var(--green);
+	}
 </style>

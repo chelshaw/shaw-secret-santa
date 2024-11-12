@@ -4,10 +4,10 @@
 
 <style>
 	.error {
-		background: #ffb6b6;
-		border: 1px solid rgb(206, 21, 21);
-		border-radius: 0.5em;
-		color: rgb(56, 1, 1);
+		background: var(--red);
+		border: 5px dashed var(--dark-red);
+		border-radius: var(--custom-border-radius);
+		color: var(--cream);
 		padding: 1rem;
 		margin: 6px 0;
 	}

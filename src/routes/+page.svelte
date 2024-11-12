@@ -1,45 +1,78 @@
-<script>
+<script lang="ts">
+	import CandyCaneBox from '../components/candy-cane-box.svelte';
 	import Error from '../components/error.svelte';
-	import Input from '../components/input.svelte';
 
 	export let form;
-	let pw = '';
-	let user = '';
+	const typeAheadThreshold = 3;
+
+	function matchingNames(list: string[] | undefined, search: string) {
+		if (!list || search.length < typeAheadThreshold) return [];
+		return list?.filter((i) => search && i.toLowerCase().startsWith(search.toLowerCase()));
+	}
+
+	let search = '';
+	$: matches = matchingNames(form?.names, search);
 </script>
 
-<svelte:head>
-	<title>🎁🎁🎁🎁🎁🎁</title>
-</svelte:head>
-
-<main>
+<CandyCaneBox>
 	{#if form?.names}
-		<h1>Who are you?</h1>
 		<form class="block" method="POST" action="?/name">
-			<select name="name" bind:value={user}>
-				<option value="" selected>Choose your name</option>
-				{#each form.names as name}
-					<option value={name}>
-						{name}
-					</option>
-				{/each}
-			</select>
-			<input class="button primary" type="submit" value="Continue" />
+			<label for="search">Who are you?</label>
+			<input bind:value={search} name="search" placeholder="Start typing your name…" />
+			{#each matches as match}
+				<div class="match">
+					<input class="readonly" name="name" value={match} readonly />
+					<input type="submit" value="This is me" />
+				</div>
+			{:else}
+				{#if search.length >= typeAheadThreshold}
+					Fiddlesticks, we can't find you! Reach out to Chelsea so she can add you to the list.
+				{/if}
+			{/each}
 		</form>
 	{:else}
-		<h1>Provide password to enter</h1>
-		<form class="block" method="POST" action="?/enter">
-			<Input label="Passcode" name="passcode" value={pw} type="password" />
-			<input class="button primary" type="submit" value="Enter" />
+		<form method="POST" action="?/enter">
+			<label for="passcode">Provide passcode to enter</label>
+			<input name="passcode" id="passcode" type="password" autocomplete="current-password" />
+			<input type="submit" value="Enter" />
 		</form>
 	{/if}
 	{#if form?.error}
 		<Error>{form?.error}</Error>
 	{/if}
-</main>
+</CandyCaneBox>
 
 <style>
+	form > * {
+		margin-bottom: 12px;
+	}
+	input {
+		width: 100%;
+		padding: 0.5em 1em;
+		border-radius: var(--custom-border-radius);
+	}
+	input[type='submit'] {
+		width: auto;
+		background-color: var(--green);
+		color: var(--cream);
+	}
+	label {
+		display: block;
+		font-size: 1.6rem;
+		font-weight: bold;
+	}
 	select {
 		width: 100%;
 		color: var(--mid-blue);
+	}
+	.match {
+		display: flex;
+		background: white;
+		padding: 0.5em;
+	}
+	input.readonly {
+		border: none;
+		padding: none;
+		font-weight: bold;
 	}
 </style>
