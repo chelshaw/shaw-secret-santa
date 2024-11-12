@@ -1,76 +1,45 @@
+<script>
+	import Error from '../components/error.svelte';
+	import Input from '../components/input.svelte';
+
+	export let form;
+	let pw = '';
+	let user = '';
+</script>
+
 <svelte:head>
-	<title>🎅🏻 Shaw Secret Santa 2023 🎅🏾</title>
+	<title>🎁🎁🎁🎁🎁🎁</title>
 </svelte:head>
 
 <main>
-	<h1>
-		Welcome to<br />
-		🎅🏻🧑🏽‍🎄 Shaw Secret Santa 2023 🧑🏼‍🎄🎅🏾
-	</h1>
-	<div class="row">
-		<div class="dancing">🎄</div>
-		<div class="dancing-rev">🎁</div>
-		<div class="dancing">🎄</div>
-		<div class="dancing-rev">🎁</div>
-		<div class="dancing">🎄</div>
-		<div class="dancing-rev">🎁</div>
-		<div class="dancing">🎄</div>
-		<div class="dancing-rev">🎁</div>
-		<div class="dancing">🎄</div>
-		<div class="dancing-rev">🎁</div>
-	</div>
-	<p class="description">If you run into issues, please reach out to Chelsea.</p>
-	<a href="/login" class="button primary">Go to log in</a>
+	{#if form?.names}
+		<h1>Who are you?</h1>
+		<form class="block" method="POST" action="?/name">
+			<select name="name" bind:value={user}>
+				<option value="" selected>Choose your name</option>
+				{#each form.names as name}
+					<option value={name}>
+						{name}
+					</option>
+				{/each}
+			</select>
+			<input class="button primary" type="submit" value="Continue" />
+		</form>
+	{:else}
+		<h1>Provide password to enter</h1>
+		<form class="block" method="POST" action="?/enter">
+			<Input label="Passcode" name="passcode" value={pw} type="password" />
+			<input class="button primary" type="submit" value="Enter" />
+		</form>
+	{/if}
+	{#if form?.error}
+		<Error>{form?.error}</Error>
+	{/if}
 </main>
 
 <style>
-	main {
-		text-align: center;
-	}
-	.row {
-		display: flex;
-		justify-content: space-between;
-	}
-	.description {
-		font-size: 1.4rem;
-	}
-
-	@keyframes dance {
-		0%,
-		100% {
-			transform: rotate(-20deg);
-		}
-		50% {
-			transform: rotate(20deg);
-		}
-	}
-	@keyframes dance-rev {
-		0%,
-		100% {
-			transform: rotate(20deg);
-		}
-		50% {
-			transform: rotate(-20deg);
-		}
-	}
-	.dancing {
-		display: inline-block;
-		font-size: 36px;
-		transform-origin: center;
-		animation: dance 3s ease-in-out infinite alternate;
-		/* , nudge 5s linear infinite alternate; */
-	}
-	.dancing-rev {
-		display: inline-block;
-		font-size: 36px;
-		transform-origin: center;
-		animation: dance-rev 3s ease-in-out infinite alternate;
-		/* , nudge 5s linear infinite alternate; */
-	}
-	@media (prefers-reduced-motion) {
-		.dancing,
-		.dancing-rev {
-			animation: none;
-		}
+	select {
+		width: 100%;
+		color: var(--mid-blue);
 	}
 </style>
