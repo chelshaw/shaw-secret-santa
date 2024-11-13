@@ -5,7 +5,6 @@
 	export let data;
 	let { profile } = data;
 	$: ({ profile } = data);
-
 	const questions = data.questions;
 </script>
 
@@ -17,8 +16,8 @@
 {/if}
 
 <CandyCaneBox>
-	<h1>{data.name}&apos;s wishlist</h1>
-	<p>We're on the honor system. <a href="/logout">Not {data.name}?</a></p>
+	<h1>{profile.name}&apos;s wishlist</h1>
+	<p>We're on the honor system. <a href="/logout">Not {profile.name}?</a></p>
 	<hr />
 	{#each questions as question}
 		<QuestionInput {question} answer={profile[question.key]} />

@@ -5,23 +5,24 @@
 	export let form;
 	const typeAheadThreshold = 3;
 
-	function matchingNames(list: string[] | undefined, search: string) {
+	function matchingNames(list: { user_id: string; name: string }[] | undefined, search: string) {
 		if (!list || search.length < typeAheadThreshold) return [];
-		return list?.filter((i) => search && i.toLowerCase().startsWith(search.toLowerCase()));
+		return list?.filter((i) => search && i.name.toLowerCase().startsWith(search.toLowerCase()));
 	}
 
 	let search = '';
-	$: matches = matchingNames(form?.names, search);
+	$: matches = matchingNames(form?.data, search);
 </script>
 
 <CandyCaneBox>
-	{#if form?.names}
+	{#if form?.data}
 		<form class="block" method="POST" action="?/name">
 			<label for="search">Who are you?</label>
 			<input bind:value={search} name="search" placeholder="Start typing your name…" />
 			{#each matches as match}
 				<div class="match">
-					<input class="readonly" name="name" value={match} readonly />
+					<input class="readonly" name="name" value={match.name} readonly />
+					<input name="userId" value={match.user_id} type="hidden" />
 					<input type="submit" value="This is me" />
 				</div>
 			{:else}

@@ -94,4 +94,7 @@
 	textarea:focus {
 		border: 2px dashed var(--green);
 	}
+	textarea::placeholder {
+		color: lightgray;
+	}
 </style>

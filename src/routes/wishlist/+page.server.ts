@@ -22,15 +22,24 @@ const defaultProfile = {
 	diet: '',
 	pamper: ''
 };
-export const load = async ({ cookies }) => {
-	const name = cookies.get('name');
+export const load = async ({ cookies, locals: { getSession, supabase } }) => {
+	const session = await getSession()
 	const visited = cookies.get('visited');
 
-	if (!name) {
+	if (!session) {
 		throw redirect(303, '/');
 	}
-
-	const profile: Profile = defaultProfile;
+	let profile: Profile = defaultProfile;
+	const { data, error } = await supabase
+		.from('profiles')
+		.select(`name,need,hobbies,style,color,genres,brands,diet,pamper`)
+		.eq('user_id', session.user.user_metadata.userId)
+		.single();
+	if (error) {
+		profile = defaultProfile;
+	} else {
+		profile = data as Profile;
+	}
 
 	const questions = [
 		{
@@ -77,7 +86,6 @@ export const load = async ({ cookies }) => {
 
 	cookies.set('visited', 'true', { path: '/wishlist' });
 	return {
-		name,
 		profile,
 		questions,
 		firstTime: !visited
@@ -90,27 +98,33 @@ export const actions = {
 		const key = formData.get('key') as string;
 		if (!key) {
 			return fail(500, {
-				something: 'No key provided'
+				error: 'No key provided'
 			});
 		}
 		const item = formData.get(key);
-		// const session = await getSession();
+		const session = await getSession();
 
-		// const { error } = await supabase
-		// 	.from('profiles')
-		// 	.update({
-		// 		[key]: item,
-		// 		updated: new Date()
-		// 	})
-		// 	.eq('user_id', session?.user.id);
+		if (!session) {
+			return fail(500, {
+				error: 'go home'
+			})
+		}
 
-		// if (error) {
-		// 	return fail(500, {
-		// 		userId: session?.user?.id,
-		// 		key,
-		// 		item
-		// 	});
-		// }
+		const { error } = await supabase
+			.from('profiles')
+			.update({
+				[key]: item,
+				updated: new Date()
+			})
+			.eq('user_id', session?.user.user_metadata.userId);
+
+		if (error) {
+			return fail(500, {
+				userId: session.user.user_metadata.userId,
+				key,
+				item
+			});
+		}
 
 		return {
 			// userId: session?.user?.id,

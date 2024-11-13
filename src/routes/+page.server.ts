@@ -1,32 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 
-const KEYPASS = '2024shaws';
-const PARTICIPANTS = [
-	'Tony',
-	'Christine',
-	// Todd fam
-	'Todd',
-	'Amy',
-	'Ian',
-	// Steve fam
-	'Tula',
-	'Zoe',
-	'Cade',
-	'Athena',
-	// Gregg fam
-	'Gregg',
-	'Rebecca',
-	'Chelsea',
-	'Zac',
-	'Trevor',
-	'Amber',
-	'Lillian',
-	'Travis',
-	'Ella',
-	// Zac fam
-	'Denys',
-	'Peter'
-];
+const KEYPASS = 'shaws';
 
 export function load({ cookies }) {
 	const name = cookies.get('name');
@@ -38,29 +12,50 @@ export function load({ cookies }) {
 }
 
 export const actions = {
-	enter: async ({ request }) => {
+	enter: async ({ request, locals: { supabase } }) => {
 		const formData = await request.formData();
 		const passcode = formData.get('passcode') as string;
-		console.log({ passcode });
+		
 		if (passcode !== KEYPASS) {
 			return fail(500, {
 				error: 'incorrect passcode'
 			});
 		}
+		const { data, error } = await supabase
+			.from('profiles')
+			.select(`user_id,name`);
+		
+		if (error) {
+			return fail(500, {
+				error: error.message
+			});
+		}
 		return {
-			names: PARTICIPANTS
+			data,
 		};
 	},
-	name: async ({ request, cookies }) => {
+	name: async ({ request, locals: { supabase } }) => {
 		const formData = await request.formData();
 		const name = formData.get('name') as string;
-
+		const userId = formData.get('userId') as string;
 		if (!name) {
 			return fail(500, {
 				error: 'no name provided'
 			});
 		}
-		cookies.set('name', name, { path: '/' });
+		const { error } = await supabase.auth.signInAnonymously({
+			options: {
+				data: { name, userId },
+			}
+		});
+
+		if (error) {
+			return fail(500, {
+				error: error.message
+			});
+		}
+		
+		// cookies.set('name', name, { path: '/' });
 
 		throw redirect(303, '/wishlist');
 	}
