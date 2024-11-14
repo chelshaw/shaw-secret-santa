@@ -1,24 +1,33 @@
 <script lang="ts">
+	import { PUBLIC_IN_DEV } from '$env/static/public';
 	import CandyCaneBox from '../components/candy-cane-box.svelte';
 	import Error from '../components/error.svelte';
 
-	export let form;
 	const typeAheadThreshold = 3;
+	export let form;
+	export let data;
+	let search = '';
+
+	$: names = form?.data || data?.list;
 
 	function matchingNames(list: { user_id: string; name: string }[] | undefined, search: string) {
 		if (!list || search.length < typeAheadThreshold) return [];
 		return list?.filter((i) => search && i.name.toLowerCase().startsWith(search.toLowerCase()));
 	}
 
-	let search = '';
-	$: matches = matchingNames(form?.data, search);
+	$: matches = matchingNames(names, search);
 </script>
 
 <CandyCaneBox>
-	{#if form?.data}
+	{#if names}
 		<form class="block" method="POST" action="?/name">
 			<label for="search">Who are you?</label>
-			<input bind:value={search} name="search" placeholder="Start typing your name…" />
+			<input
+				bind:value={search}
+				name="search"
+				placeholder="Start typing your name…"
+				autocomplete="off"
+			/>
 			{#each matches as match}
 				<div class="match">
 					<input class="readonly" name="name" value={match.name} readonly />
@@ -42,8 +51,21 @@
 		<Error>{form?.error}</Error>
 	{/if}
 </CandyCaneBox>
+{#if PUBLIC_IN_DEV}
+	<div class="dev-mode">DEV MODE</div>
+{/if}
 
 <style>
+	.dev-mode {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		padding: 0.5em 1em;
+		background: var(--green);
+		color: var(--black);
+		text-align: center;
+	}
 	form > * {
 		margin-bottom: 12px;
 	}

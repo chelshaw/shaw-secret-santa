@@ -1,3 +1,4 @@
+import { visited } from '$lib/cookie-names.js';
 import { fail, redirect } from '@sveltejs/kit';
 export interface Profile {
 	name: string;
@@ -24,7 +25,7 @@ const defaultProfile = {
 };
 export const load = async ({ cookies, locals: { getSession, supabase } }) => {
 	const session = await getSession()
-	const visited = cookies.get('visited');
+	const v = cookies.get(visited);
 
 	if (!session) {
 		throw redirect(303, '/');
@@ -84,11 +85,12 @@ export const load = async ({ cookies, locals: { getSession, supabase } }) => {
 		}
 	];
 
-	cookies.set('visited', 'true', { path: '/wishlist' });
+	cookies.set(visited, 'true', { path: '/wishlist' });
 	return {
+		jwt: session.user,
 		profile,
 		questions,
-		firstTime: !visited
+		firstTime: !v
 	};
 };
 
@@ -117,7 +119,6 @@ export const actions = {
 				updated: new Date()
 			})
 			.eq('user_id', session?.user.user_metadata.userId);
-
 		if (error) {
 			return fail(500, {
 				userId: session.user.user_metadata.userId,

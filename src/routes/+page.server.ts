@@ -1,18 +1,35 @@
+import { DB_ACCESS_KEY, KEYPASS } from '$env/static/private';
+import { entered } from '$lib/cookie-names.js';
+import { SupabaseClient } from '@supabase/supabase-js';
 import { fail, redirect } from '@sveltejs/kit';
 
-const KEYPASS = 'shaws';
+async function getProfiles(supabase: SupabaseClient) {
+	const { data, error } = await supabase
+			.from('profiles')
+			.select(`user_id,name`);
+		
+		if (error) {
+			return [];
+		}
+		return data;
+}
 
-export function load({ cookies }) {
-	const name = cookies.get('name');
-
-	if (name) {
+export async function load({ cookies, locals: { supabase, getSession } }) {
+	const session = await getSession();
+	if (session) {
 		throw redirect(303, '/wishlist');
+	}
+	const pw = cookies.get(entered);
+	if (pw === KEYPASS) {
+		// password was already correctly submitted
+		const list = await getProfiles(supabase);
+		return { list }
 	}
 	return {};
 }
 
 export const actions = {
-	enter: async ({ request, locals: { supabase } }) => {
+	enter: async ({ request, cookies, locals: { supabase } }) => {
 		const formData = await request.formData();
 		const passcode = formData.get('passcode') as string;
 		
@@ -30,6 +47,7 @@ export const actions = {
 				error: error.message
 			});
 		}
+		cookies.set(entered, passcode, { path: '/'})
 		return {
 			data,
 		};
@@ -45,7 +63,7 @@ export const actions = {
 		}
 		const { error } = await supabase.auth.signInAnonymously({
 			options: {
-				data: { name, userId },
+				data: { name, userId, access: DB_ACCESS_KEY },
 			}
 		});
 
@@ -55,8 +73,6 @@ export const actions = {
 			});
 		}
 		
-		// cookies.set('name', name, { path: '/' });
-
 		throw redirect(303, '/wishlist');
 	}
 };
