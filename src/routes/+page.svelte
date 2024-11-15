@@ -84,10 +84,6 @@
 		font-size: 1.6rem;
 		font-weight: bold;
 	}
-	select {
-		width: 100%;
-		color: var(--mid-blue);
-	}
 	.match {
 		display: flex;
 		background: white;

@@ -85,3 +85,26 @@ body {
 .opacity-half {
 	opacity: 50%;
 }
+
+/* Buttons */
+.btn-group {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 1em;
+}
+.btn {
+	width: auto;
+	display: inline-block;
+	padding: 0.5em 1em;
+	border-radius: var(--custom-border-radius);
+}
+.btn--red {
+	background: white;
+	color: var(--red);
+	border-color: var(--red);
+}
+.btn--green {
+	background: var(--green);
+	color: white;
+}

@@ -26,111 +26,120 @@ const defaultProfile = {
 export const load = async ({ cookies, locals: { getSession, supabase } }) => {
 	const session = await getSession()
 	const v = cookies.get(visited);
-
+	
 	if (!session) {
 		throw redirect(303, '/');
 	}
+	const { userId } = session.user.user_metadata;
 	let profile: Profile = defaultProfile;
 	const { data, error } = await supabase
 		.from('profiles')
-		.select(`name,need,hobbies,style,color,genres,brands,diet,pamper`)
-		.eq('user_id', session.user.user_metadata.userId)
+		.select(`name`)
+		.eq('user_id', userId)
 		.single();
 	if (error) {
 		profile = defaultProfile;
 	} else {
 		profile = data as Profile;
 	}
-
-	const questions = [
-		{
-			key: 'need',
-			label: 'Is there something specific you want or need?',
-			subtext: 'Feel free to add links to specific items if you have them.'
-		},
-		{
-			key: 'hobbies',
-			label: 'What are your hobbies or interests?',
-			subtext: 'Think of any activities you do that might need more materials.'
-		},
-		{
-			key: 'style',
-			label: 'How would you describe your style?',
-			subtext: "How does someone know you'll love a piece of clothing or home decor?"
-		},
-		{
-			key: 'color',
-			label: "What's your favorite color to wear?",
-			subtext: "Or, tell us what colors you DON'T like to wear. But be sure to specify which!"
-		},
-		{
-			key: 'genres',
-			label: 'Favorite TV, movie, or book genres?',
-			subtext: 'Are you part of any fandoms? Who do you stan?'
-		},
-		{
-			key: 'brands',
-			label: 'Any specific brands or stores you like to shop from?',
-			subtext: 'Think of stores someone is likely to pick up something you like.'
-		},
-		{
-			key: 'diet',
-			label: 'Any dietary restrictions or preferences?',
-			subtext: "Pretty self explanitory -- anything you don't eat?"
-		},
-		{
-			key: 'pamper',
-			label: 'How do you enjoy pampering yourself?',
-			subtext: 'What scents, sensations, and activities make you feel relaxed and cared for?'
-		}
-	];
+	const {data: answers} = await supabase.from('answers').select('id,q_key,answer').eq('user_id', userId)
 
 	cookies.set(visited, 'true', { path: '/wishlist' });
 	return {
-		jwt: session.user,
 		profile,
-		questions,
+		answers,
 		firstTime: !v
 	};
 };
 
 export const actions = {
-	update: async ({ request, locals: { supabase, getSession } }) => {
+	add: async ({ request, locals: { supabase, getSession } }) => {
 		const formData = await request.formData();
-		const key = formData.get('key') as string;
-		if (!key) {
+		const session = await getSession();
+		const qKey = formData.get('qKey') as string;
+		const answer = formData.get('answer') as string;
+		if (!qKey || !answer || !session) {
 			return fail(500, {
-				error: 'No key provided'
+				error: 'missing data'
 			});
 		}
-		const item = formData.get(key);
-		const session = await getSession();
+		const { userId } = session.user.user_metadata
 
-		if (!session) {
-			return fail(500, {
-				error: 'go home'
+		const { data, error } = await supabase
+			.from('answers')
+			.insert({
+				user_id: userId,
+				q_key: qKey,
+				answer,
+				updated_at: new Date()
 			})
-		}
-
-		const { error } = await supabase
-			.from('profiles')
-			.update({
-				[key]: item,
-				updated: new Date()
-			})
-			.eq('user_id', session?.user.user_metadata.userId);
+			.select();
 		if (error) {
 			return fail(500, {
-				userId: session.user.user_metadata.userId,
-				key,
-				item
+				qKey,
+				answer,
+				error: 'unable to add answer',
+				message: error.message,
+			});
+		}
+
+		return { qKey, answer, answerId: data[0].id, action: 'add' };
+	},
+	remove: async ({ request, locals: { supabase, getSession } }) => {
+		const formData = await request.formData();
+		const session = await getSession();
+		const answerId = formData.get('answerId') as string;
+		if (!answerId || !session) {
+			return fail(500, {
+				error: 'missing data'
+			});
+		}
+		const { error } = await supabase
+			.from('answers')
+			.delete()
+			.eq('id', parseInt(answerId, 10))
+		if (error) {
+			return fail(500, {
+				error: 'unable to add answer',
+				message: error.message,
+			});
+		}
+
+		return { answerId, action: 'remove' };
+	},
+	update: async ({ request, locals: { supabase, getSession } }) => {
+		const formData = await request.formData();
+		const session = await getSession();
+		const answerId = formData.get('answerId') as string;
+		const qKey = formData.get('qKey') as string;
+		const answer = formData.get('answer') as string;
+		if (!answerId || !session) {
+			return fail(500, {
+				error: 'missing data'
+			});
+		}
+		const { error } = await supabase
+			.from('answers')
+			.update({
+				answer,
+				updated_at: new Date()
+			})
+			.eq('id', parseInt(answerId));
+		if (error) {
+			return fail(500, {
+				qKey,
+				answer,
+				answerId,
+				action: 'update',
+				message: error.message,
 			});
 		}
 
 		return {
-			// userId: session?.user?.id,
-			key,
-			item
+			qKey,
+			answer,
+			answerId,
+			action: 'update',
 		};
 	}
 };
