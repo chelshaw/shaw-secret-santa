@@ -5,12 +5,12 @@
 
 	export let form;
 	export let data;
-	let matches: { user_id: string; name: string }[];
+	let matches: { user_id: string; name: string }[] = [];
 
-	$: names = form?.data || data?.list;
+	$: names = form?.data || data?.list || [];
 
 	function onMatch(m: { user_id: string; name: string }[]) {
-		matches = m;
+		matches = m || [];
 	}
 </script>
 
