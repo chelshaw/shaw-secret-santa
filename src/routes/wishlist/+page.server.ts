@@ -152,7 +152,7 @@ export const actions = {
 
 		if (error) {
 			return fail(500, {
-				action: 'confirm',
+				action: 'email',
 				message: error.message
 			});
 		}

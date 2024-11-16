@@ -24,6 +24,9 @@
 		list.splice(idx, 1);
 		answers = list;
 	}
+	function handleEmailConfirm() {
+		data.confirmed = true;
+	}
 </script>
 
 {#if data.firstTime}
@@ -38,7 +41,7 @@
 	<p>We're on the honor system. <a href="/logout">Not {data.name}?</a></p>
 	<hr />
 	{#if showEmailBanner}
-		<ConfirmEmail {email} />
+		<ConfirmEmail {email} onSuccess={handleEmailConfirm} />
 	{:else}
 		<h2>Answer questions</h2>
 		{#if remainingQuestions.length}

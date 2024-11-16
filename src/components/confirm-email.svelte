@@ -3,6 +3,7 @@
 	import Error from './error.svelte';
 
 	export let email = '';
+	export let onSuccess: CallableFunction = () => {};
 	let saved = false;
 	let error = '';
 </script>
@@ -18,6 +19,7 @@
 				await setTimeout(() => {
 					saved = false;
 				}, 3000);
+				onSuccess();
 			} else if (result.type === 'failure') {
 				error = `Error: ${result.data?.message}`;
 			} else {
