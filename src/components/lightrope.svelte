@@ -1,5 +1,5 @@
 <div class="rope">
-	{#each { length: 30 } as _}
+	{#each { length: 20 } as _}
 		<div class="bulb" />
 	{/each}
 </div>
@@ -24,7 +24,7 @@
 		width: var(--globe-width);
 		height: var(--globe-height);
 		border-radius: 50%;
-		animation-duration: 4s;
+		animation-duration: 3s;
 		animation-fill-mode: both;
 		animation-iteration-count: infinite;
 	}

@@ -6,6 +6,7 @@
 	export let searchPlaceholder = 'Start typing your name…';
 	export let emptyMessage =
 		"Fiddlesticks, we can't find you! Reach out to Chelsea so she can add you to the list.";
+	export let largeLabel = false;
 
 	let search = '';
 	function matchingNames(list: { user_id: string; name: string }[] | undefined, search: string) {
@@ -19,7 +20,7 @@
 	}
 </script>
 
-<label for="search">{label}</label>
+<label for="search" class:large={largeLabel}>{label}</label>
 <input
 	bind:value={search}
 	on:input={returnMatches}
@@ -40,7 +41,9 @@
 	}
 	label {
 		display: block;
-		font-size: 1.4rem;
 		font-weight: bold;
+	}
+	.large {
+		font-size: 1.4rem;
 	}
 </style>

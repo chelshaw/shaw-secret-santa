@@ -25,7 +25,8 @@ export const load = async ({ locals: { getSession, supabase } }) => {
 		profiles: profiles || [],
 		match: data?.match,
 		blockList: profile?.do_not_match || [],
-		email: profile?.private.email || ''
+		email: profile?.private.email || '',
+		self: userId
 	};
 };
 

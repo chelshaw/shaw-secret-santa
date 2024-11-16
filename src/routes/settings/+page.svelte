@@ -18,11 +18,11 @@
 		  }, {})
 		: {};
 
-	function filterProfiles(match: string, blocklist: string[], profiles: Profile[]) {
-		const blocked = [...blocklist, match];
+	function filterProfiles(profiles: Profile[], blocklist: string[], self: string, match: string) {
+		const blocked = [...blocklist, match, self];
 		return profiles.filter((p) => !blocked.includes(p.user_id));
 	}
-	$: profilesLeft = filterProfiles(data.match, data.blockList, data.profiles);
+	$: profilesLeft = filterProfiles(data.profiles, data.blockList, data.self, data.match);
 	function onMatch(m: Profile[]) {
 		matches = m;
 	}
@@ -37,13 +37,19 @@
 		Add names of participants who you do not want to match with this year (eg. your spouse). You
 		will not be matched with the person you matched with last year, if you participated.
 	</p>
-	<ProfileSearch profiles={profilesLeft} {onMatch} label="Search for name" />
+	<ProfileSearch
+		profiles={profilesLeft}
+		{onMatch}
+		label="Block match with"
+		searchPlaceholder="Search by name"
+		emptyMessage="User not found"
+	/>
 	{#each matches as match}
 		<form class="match" method="POST" action="/settings?/block">
 			<input class="readonly" name="name" value={match.name} readonly />
 			<input name="userId" value={match.user_id} type="hidden" />
 			<input name="blocklist" value={data.blockList} type="hidden" />
-			<input type="submit" class="btn" value="Do not match" />
+			<input type="submit" class="btn btn--match" value="Do not match" />
 		</form>
 	{/each}
 	<h3>Blocklist</h3>
@@ -52,7 +58,7 @@
 			<input class="readonly" name="name" value={profilesById[b].name} readonly />
 			<input name="userId" value={profilesById[b].user_id} type="hidden" />
 			<input name="blocklist" value={data.blockList} type="hidden" />
-			<input type="submit" class="btn btn--red" value="Unblock" />
+			<input type="submit" class="btn btn--red btn--match" value="Unblock" />
 		</form>
 	{/each}
 	{#if data.match}
@@ -81,6 +87,7 @@
 		background: white;
 		padding: 0.5em;
 		justify-content: space-between;
+		align-items: baseline;
 	}
 	input.readonly {
 		border: none;
@@ -90,5 +97,8 @@
 	}
 	span {
 		font-size: 0.7em;
+	}
+	.btn--match {
+		width: auto;
 	}
 </style>

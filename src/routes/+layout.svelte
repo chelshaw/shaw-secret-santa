@@ -25,15 +25,27 @@
 	<title>Shaw Secret Santa</title>
 </svelte:head>
 
-<div>
+<div class="wrapper">
 	<Lightrope />
 	<div class="padded">
 		<slot />
 	</div>
+	<footer>
+		<Lightrope />
+	</footer>
 </div>
 
 <style>
+	.wrapper {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+	}
 	.padded {
 		padding: 3rem 1rem;
+		flex-grow: 2;
+	}
+	footer {
+		padding: 2em 0;
 	}
 </style>

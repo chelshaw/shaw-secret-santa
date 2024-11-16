@@ -18,7 +18,7 @@
 <CandyCaneBox>
 	{#if names}
 		<form class="block" method="POST" action="?/name">
-			<ProfileSearch profiles={names} {onMatch} />
+			<ProfileSearch profiles={names} {onMatch} largeLabel={true} />
 			{#each matches as match}
 				<div class="match">
 					<input class="readonly" name="name" value={match.name} readonly />
