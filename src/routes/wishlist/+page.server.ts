@@ -1,54 +1,48 @@
 import { visited } from '$lib/cookie-names.js';
 import { fail, redirect } from '@sveltejs/kit';
-export interface Profile {
+
+interface Profile {
 	name: string;
-	need: string;
-	hobbies: string;
-	style: string;
-	genres: string;
-	brands: string;
-	color: string;
-	diet: string;
-	pamper: string;
-	[key: string]: string;
+	answers: { id: number; q_key: string; answer: string }[];
+	private: {
+		email: string;
+		confirmed: boolean;
+	};
 }
-const defaultProfile = {
-	name: '',
-	need: '',
-	hobbies: '',
-	style: '',
-	genres: '',
-	brands: '',
-	color: '',
-	diet: '',
-	pamper: ''
-};
+
 export const load = async ({ cookies, locals: { getSession, supabase } }) => {
-	const session = await getSession()
+	const session = await getSession();
 	const v = cookies.get(visited);
-	
+
 	if (!session) {
 		throw redirect(303, '/');
 	}
 	const { userId } = session.user.user_metadata;
-	let profile: Profile = defaultProfile;
-	const { data, error } = await supabase
+	const { data }: { data: Profile | null } = await supabase
 		.from('profiles')
-		.select(`name`)
+		.select(
+			`
+			name,
+			answers (
+				id,q_key,answer
+			),
+			private (
+				email,confirmed
+			)
+		`
+		)
 		.eq('user_id', userId)
 		.single();
-	if (error) {
-		profile = defaultProfile;
-	} else {
-		profile = data as Profile;
-	}
-	const {data: answers} = await supabase.from('answers').select('id,q_key,answer').eq('user_id', userId)
 
 	cookies.set(visited, 'true', { path: '/wishlist' });
 	return {
-		profile,
-		answers,
-		firstTime: !v
+		firstTime: !v,
+		name: data?.name || '',
+		answers: data?.answers || [],
+		email: data?.private.email || '',
+		confirmed: data?.private.confirmed || false
+		// email: data?.private ? data.private[0].email : '',
+		// confirmed: data?.private ? data.private[0].confirmed : false,
 	};
 };
 
@@ -63,7 +57,7 @@ export const actions = {
 				error: 'missing data'
 			});
 		}
-		const { userId } = session.user.user_metadata
+		const { userId } = session.user.user_metadata;
 
 		const { data, error } = await supabase
 			.from('answers')
@@ -79,7 +73,7 @@ export const actions = {
 				qKey,
 				answer,
 				error: 'unable to add answer',
-				message: error.message,
+				message: error.message
 			});
 		}
 
@@ -94,14 +88,11 @@ export const actions = {
 				error: 'missing data'
 			});
 		}
-		const { error } = await supabase
-			.from('answers')
-			.delete()
-			.eq('id', parseInt(answerId, 10))
+		const { error } = await supabase.from('answers').delete().eq('id', parseInt(answerId, 10));
 		if (error) {
 			return fail(500, {
 				error: 'unable to add answer',
-				message: error.message,
+				message: error.message
 			});
 		}
 
@@ -131,7 +122,7 @@ export const actions = {
 				answer,
 				answerId,
 				action: 'update',
-				message: error.message,
+				message: error.message
 			});
 		}
 
@@ -139,7 +130,35 @@ export const actions = {
 			qKey,
 			answer,
 			answerId,
-			action: 'update',
+			action: 'update'
+		};
+	},
+	email: async ({ request, locals: { supabase, getSession } }) => {
+		const formData = await request.formData();
+		const session = await getSession();
+		const email = formData.get('email') as string;
+		if (!email || !session) {
+			return fail(500, {
+				error: 'missing data'
+			});
+		}
+		const { error } = await supabase
+			.from('private')
+			.update({
+				email,
+				confirmed: true
+			})
+			.eq('user_id', session.user.user_metadata.userId);
+
+		if (error) {
+			return fail(500, {
+				action: 'confirm',
+				message: error.message
+			});
+		}
+
+		return {
+			action: 'email'
 		};
 	}
 };

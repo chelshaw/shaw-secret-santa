@@ -5,25 +5,29 @@
 
 	export let key = '';
 	export let a = '';
-	export let answerId = '';
-	export let onRemove:CallableFunction;
+	export let answerId: number;
+	export let onRemove: CallableFunction;
 	let saved = false;
 </script>
 
-<form method="POST" action="/wishlist?/update" use:enhance={({ formElement, formData, action, cancel, submitter }) => { 
-	return async ({ result }) => {
-		if (result.type === 'success') {
-			if (result.data?.action === 'remove') {
-				onRemove(result.data?.answerId)
-			} else {
-				saved = true;
-				await setTimeout(() => {
-					saved = false;
-				}, 3000);
+<form
+	method="POST"
+	action="/wishlist?/update"
+	use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+		return async ({ result }) => {
+			if (result.type === 'success') {
+				if (result.data?.action === 'remove') {
+					onRemove(result.data?.answerId);
+				} else {
+					saved = true;
+					await setTimeout(() => {
+						saved = false;
+					}, 3000);
+				}
 			}
-		}
-	};
-}}>
+		};
+	}}
+>
 	<Textarea label={questions[key].label} subtext={questions[key].subtext} answer={a} />
 	<input name="answerId" type="hidden" value={answerId} />
 	<div class="btn-group">
@@ -58,7 +62,7 @@
 		padding: 0.5em 1em;
 		border-radius: var(--custom-border-radius);
 	}
-	
+
 	.save-btn {
 		display: flex;
 		justify-content: end;

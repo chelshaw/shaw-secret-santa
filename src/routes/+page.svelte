@@ -2,42 +2,29 @@
 	import { PUBLIC_IN_DEV } from '$env/static/public';
 	import CandyCaneBox from '../components/candy-cane-box.svelte';
 	import Error from '../components/error.svelte';
+	import ProfileSearch from '../components/profile-search.svelte';
 
-	const typeAheadThreshold = 3;
 	export let form;
 	export let data;
-	let search = '';
+	let matches: { user_id: string; name: string }[];
 
 	$: names = form?.data || data?.list;
 
-	function matchingNames(list: { user_id: string; name: string }[] | undefined, search: string) {
-		if (!list || search.length < typeAheadThreshold) return [];
-		return list?.filter((i) => search && i.name.toLowerCase().startsWith(search.toLowerCase()));
+	function onMatch(m: { user_id: string; name: string }[]) {
+		matches = m;
 	}
-
-	$: matches = matchingNames(names, search);
 </script>
 
 <CandyCaneBox>
 	{#if names}
 		<form class="block" method="POST" action="?/name">
-			<label for="search">Who are you?</label>
-			<input
-				bind:value={search}
-				name="search"
-				placeholder="Start typing your name…"
-				autocomplete="off"
-			/>
+			<ProfileSearch profiles={names} {onMatch} />
 			{#each matches as match}
 				<div class="match">
 					<input class="readonly" name="name" value={match.name} readonly />
 					<input name="userId" value={match.user_id} type="hidden" />
 					<input type="submit" value="This is me" />
 				</div>
-			{:else}
-				{#if search.length >= typeAheadThreshold}
-					Fiddlesticks, we can't find you! Reach out to Chelsea so she can add you to the list.
-				{/if}
 			{/each}
 		</form>
 	{:else}
