@@ -12,11 +12,10 @@
 	function onMatch(m: { user_id: string; name: string }[]) {
 		matches = m || [];
 	}
-	console.log({ names, matches });
 </script>
 
 <CandyCaneBox>
-	{#if names}
+	{#if names.length > 0}
 		<form class="block" method="POST" action="?/name">
 			<ProfileSearch profiles={names} {onMatch} largeLabel={true} />
 			{#each matches as match}
