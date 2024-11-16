@@ -4,14 +4,12 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { fail, redirect } from '@sveltejs/kit';
 
 async function getProfiles(supabase: SupabaseClient) {
-	const { data, error } = await supabase
-			.from('profiles')
-			.select(`user_id,name`);
-		
-		if (error) {
-			return [];
-		}
-		return data;
+	const { data, error } = await supabase.from('profiles').select(`user_id,name`);
+
+	if (error) {
+		return [];
+	}
+	return data;
 }
 
 export async function load({ cookies, locals: { supabase, getSession } }) {
@@ -20,10 +18,10 @@ export async function load({ cookies, locals: { supabase, getSession } }) {
 		throw redirect(303, '/wishlist');
 	}
 	const pw = cookies.get(entered);
-	if (pw === KEYPASS) {
+	if (pw && pw === KEYPASS) {
 		// password was already correctly submitted
 		const list = await getProfiles(supabase);
-		return { list }
+		return { list };
 	}
 	return {};
 }
@@ -32,24 +30,22 @@ export const actions = {
 	enter: async ({ request, cookies, locals: { supabase } }) => {
 		const formData = await request.formData();
 		const passcode = formData.get('passcode') as string;
-		
+
 		if (passcode !== KEYPASS) {
 			return fail(500, {
 				error: 'incorrect passcode'
 			});
 		}
-		const { data, error } = await supabase
-			.from('profiles')
-			.select(`user_id,name`);
-		
+		const { data, error } = await supabase.from('profiles').select(`user_id,name`);
+
 		if (error) {
 			return fail(500, {
 				error: error.message
 			});
 		}
-		cookies.set(entered, passcode, { path: '/'})
+		cookies.set(entered, passcode, { path: '/' });
 		return {
-			data,
+			data
 		};
 	},
 	name: async ({ request, locals: { supabase } }) => {
@@ -63,7 +59,7 @@ export const actions = {
 		}
 		const { error } = await supabase.auth.signInAnonymously({
 			options: {
-				data: { name, userId, access: DB_ACCESS_KEY },
+				data: { name, userId, access: DB_ACCESS_KEY }
 			}
 		});
 
@@ -72,7 +68,7 @@ export const actions = {
 				error: error.message
 			});
 		}
-		
+
 		throw redirect(303, '/wishlist');
 	}
 };
