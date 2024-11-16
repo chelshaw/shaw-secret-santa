@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Error from './error.svelte';
 
 	export let email = '';
 	let saved = false;
+	let error = '';
 </script>
 
 <form
@@ -16,6 +18,10 @@
 				await setTimeout(() => {
 					saved = false;
 				}, 3000);
+			} else if (result.type === 'failure') {
+				error = `Error: ${result.data?.message}`;
+			} else {
+				error = 'Unknown error occurred. Please try again later.';
 			}
 		};
 	}}
@@ -29,6 +35,9 @@
 	</label>
 	<input id="email" type="email" name="email" bind:value={email} />
 	<input type="submit" value="Confirm" class="btn btn--green" />
+	{#if error}
+		<Error>{error}</Error>
+	{/if}
 </form>
 
 <style>

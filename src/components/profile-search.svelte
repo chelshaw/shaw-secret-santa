@@ -31,9 +31,6 @@
 {#if search.length >= typeAheadThreshold && matches.length === 0}
 	{emptyMessage}
 {/if}
-{#each profiles as n}
-	{n.name}
-{/each}
 
 <style>
 	input {

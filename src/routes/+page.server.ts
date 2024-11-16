@@ -5,7 +5,6 @@ import { fail, redirect } from '@sveltejs/kit';
 
 async function getProfiles(supabase: SupabaseClient) {
 	const { data, error } = await supabase.from('profiles').select(`user_id,name`);
-	console.log('profiles', data, error);
 	if (error) {
 		return [];
 	}
