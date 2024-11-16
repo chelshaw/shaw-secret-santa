@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { PUBLIC_IN_DEV } from '$env/static/public';
 	import CandyCaneBox from '../components/candy-cane-box.svelte';
 	import Error from '../components/error.svelte';
 	import ProfileSearch from '../components/profile-search.svelte';
