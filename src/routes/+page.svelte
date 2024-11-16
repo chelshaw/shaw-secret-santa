@@ -38,21 +38,8 @@
 		<Error>{form?.error}</Error>
 	{/if}
 </CandyCaneBox>
-{#if PUBLIC_IN_DEV}
-	<div class="dev-mode">DEV MODE</div>
-{/if}
 
 <style>
-	.dev-mode {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		padding: 0.5em 1em;
-		background: var(--green);
-		color: var(--black);
-		text-align: center;
-	}
 	form > * {
 		margin-bottom: 12px;
 	}
