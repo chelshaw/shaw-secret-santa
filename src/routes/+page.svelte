@@ -12,6 +12,7 @@
 	function onMatch(m: { user_id: string; name: string }[]) {
 		matches = m || [];
 	}
+	console.log({ names, matches });
 </script>
 
 <CandyCaneBox>
