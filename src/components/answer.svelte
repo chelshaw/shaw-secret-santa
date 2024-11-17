@@ -13,7 +13,7 @@
 <form
 	method="POST"
 	action="/wishlist?/update"
-	use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+	use:enhance={() => {
 		return async ({ result }) => {
 			if (result.type === 'success') {
 				if (result.data?.action === 'remove') {

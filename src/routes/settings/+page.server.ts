@@ -11,6 +11,7 @@ export const load = async ({ locals: { getSession, supabase } }) => {
 	const session = await getSession();
 
 	if (!session) {
+		console.log('no session', session);
 		throw redirect(303, '/');
 	}
 	const { userId } = session.user.user_metadata;
@@ -39,7 +40,7 @@ export const actions = {
 		const blockList = listString.split(',').filter((b) => !!b);
 		if (!blockUser || !session) {
 			return fail(500, {
-				error: 'missing data'
+				message: 'missing data'
 			});
 		}
 		blockList.push(blockUser);
@@ -51,7 +52,12 @@ export const actions = {
 				updated: new Date()
 			})
 			.eq('user_id', userId);
-		return { blockList, data, error };
+		if (error) {
+			return fail(500, {
+				message: error.message
+			});
+		}
+		return { blockList, data };
 	},
 	unblock: async ({ request, locals: { supabase, getSession } }) => {
 		const formData = await request.formData();
@@ -61,7 +67,7 @@ export const actions = {
 		const blockList = listString.split(',').filter((b) => !!b);
 		if (!user || !session) {
 			return fail(500, {
-				error: 'missing data'
+				message: 'missing data'
 			});
 		}
 		const idx = blockList.indexOf(user);

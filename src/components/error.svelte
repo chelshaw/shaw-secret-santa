@@ -1,4 +1,8 @@
-<div class="error">
+<script lang="ts">
+	export let debug = 'No debug info';
+</script>
+
+<div class="error" data-debug={debug}>
 	<slot />
 </div>
 

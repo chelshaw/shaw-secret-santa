@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import CandyCaneBox from '../../components/candy-cane-box.svelte';
 	import ConfirmEmail from '../../components/confirm-email.svelte';
+	import Error from '../../components/error.svelte';
 	import ProfileSearch from '../../components/profile-search.svelte';
 	import Tabs from '../../components/tabs.svelte';
 	interface Profile {
@@ -8,6 +10,7 @@
 		user_id: string;
 	}
 	export let data;
+	let blockError = '';
 	let matches: Profile[] = [];
 
 	$: profilesById = data.profiles
@@ -45,13 +48,30 @@
 		emptyMessage="User not found"
 	/>
 	{#each matches as match}
-		<form class="match" method="POST" action="/settings?/block">
+		<form
+			class="match"
+			method="POST"
+			action="/settings?/block"
+			use:enhance={() => {
+				blockError = '';
+				return async ({ result, update }) => {
+					if (result.type === 'failure') {
+						console.log('failure: ', result.data?.message);
+					} else {
+						update();
+					}
+				};
+			}}
+		>
 			<input class="readonly" name="name" value={match.name} readonly />
 			<input name="userId" value={match.user_id} type="hidden" />
 			<input name="blocklist" value={data.blockList} type="hidden" />
 			<input type="submit" class="btn btn--match" value="Do not match" />
 		</form>
 	{/each}
+	{#if blockError}
+		<Error debug={blockError}>An error occurred. Please try again later.</Error>
+	{/if}
 	<h3>Blocklist</h3>
 	{#each data.blockList as b}
 		<form class="match" method="POST" action="/settings?/unblock">
