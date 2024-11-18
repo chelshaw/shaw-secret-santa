@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import questions from '$lib/questions';
+	import CandyCaneBox from './candy-cane-box.svelte';
 	import Textarea from './textarea.svelte';
 
 	export let key = '';
@@ -8,22 +9,20 @@
 	export let answerId: number;
 	export let onRemove: CallableFunction;
 	let saved = false;
+	let confirmation: HTMLDialogElement;
 </script>
 
 <form
+	class="answer"
 	method="POST"
 	action="/wishlist?/update"
 	use:enhance={() => {
 		return async ({ result }) => {
 			if (result.type === 'success') {
-				if (result.data?.action === 'remove') {
-					onRemove(result.data?.answerId);
-				} else {
-					saved = true;
-					await setTimeout(() => {
-						saved = false;
-					}, 3000);
-				}
+				saved = true;
+				await setTimeout(() => {
+					saved = false;
+				}, 3000);
 			}
 		};
 	}}
@@ -31,7 +30,9 @@
 	<Textarea label={questions[key].label} subtext={questions[key].subtext} answer={a} />
 	<input name="answerId" type="hidden" value={answerId} />
 	<div class="btn-group">
-		<button class="btn btn--red" formaction="/wishlist?/remove">❌ Remove</button>
+		<button class="btn btn--red" type="button" on:click={() => confirmation.showModal()}
+			>❌ Remove</button
+		>
 		<div class="save-btn">
 			{#if saved}
 				<span class="saved">✅ Saved</span>
@@ -40,9 +41,32 @@
 		</div>
 	</div>
 </form>
+<dialog bind:this={confirmation}>
+	<CandyCaneBox>
+		<form
+			method="POST"
+			action="/wishlist?/remove"
+			use:enhance={() => {
+				return async ({ result }) => {
+					if (result.type === 'success') {
+						onRemove(result.data?.answerId);
+						confirmation.close();
+					}
+				};
+			}}
+		>
+			<p class="confirm">Are you sure?</p>
+			<input name="answerId" type="hidden" value={answerId} />
+			<div class="btn-group">
+				<button type="button" on:click={() => confirmation.close()} class="btn">No, cancel</button>
+				<input type="submit" value="Yes, remove" class="btn btn--red" />
+			</div>
+		</form>
+	</CandyCaneBox>
+</dialog>
 
 <style>
-	form {
+	form.answer {
 		border: 1px solid var(--green);
 		padding: 0.5em;
 		margin: 0.5em 0;
@@ -68,5 +92,18 @@
 		justify-content: end;
 		align-items: baseline;
 		gap: 1em;
+	}
+	::backdrop {
+		background-image: linear-gradient(45deg, var(--red), black, var(--green));
+		opacity: 0.75;
+	}
+	dialog {
+		/* matches candy cane outer */
+		border-radius: 30px;
+		padding: 0;
+		border: none;
+	}
+	p.confirm {
+		margin-top: 0;
 	}
 </style>

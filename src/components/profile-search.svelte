@@ -20,7 +20,7 @@
 	}
 </script>
 
-<label for="search" class:large={largeLabel}>{label}</label>
+<label for="search" class="large">{label}</label>
 <input
 	bind:value={search}
 	on:input={returnMatches}
@@ -37,7 +37,7 @@
 		width: 100%;
 		padding: 0.5em 1em;
 		border-radius: var(--custom-border-radius);
-		margin-bottom: 12px;
+		margin: 6px 0 12px 0;
 	}
 	label {
 		display: block;
