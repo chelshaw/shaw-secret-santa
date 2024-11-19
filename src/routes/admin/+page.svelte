@@ -1,8 +1,7 @@
 <script lang="ts">
-	import Error from '../../../components/error.svelte';
+	import Error from '../../components/error.svelte';
 
 	export let data;
-	export let form;
 
 	let matches: Match[];
 	let error: string;
