@@ -5,6 +5,7 @@
 <div class="width tabs">
 	<a href="/wishlist" class:active={current === 'wishlist'}>Wishlist</a>
 	<a href="/settings" class:active={current === 'settings'}>Settings</a>
+	<a href="/about" class:active={current === 'about'}>About</a>
 </div>
 
 <style>
