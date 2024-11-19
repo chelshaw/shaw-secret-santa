@@ -29,7 +29,13 @@
 	{:else}
 		<form method="POST" action="?/enter">
 			<label for="passcode">Provide passcode to enter</label>
-			<input name="passcode" id="passcode" type="password" autocomplete="current-password" />
+			<input
+				name="passcode"
+				id="passcode"
+				type="text"
+				class="passcode"
+				autocomplete="current-password"
+			/>
 			<input type="submit" value="Enter" />
 		</form>
 	{/if}
@@ -51,6 +57,11 @@
 		width: auto;
 		background-color: var(--green);
 		color: var(--cream);
+	}
+	input.passcode {
+		font-family: 'Courier New', Courier, monospace;
+		border: 2px dashed var(--red);
+		color: black;
 	}
 	label {
 		display: block;
