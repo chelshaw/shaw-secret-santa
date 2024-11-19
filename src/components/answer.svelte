@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import questions from '$lib/questions';
 	import CandyCaneBox from './candy-cane-box.svelte';
+	import Error from './error.svelte';
 	import Textarea from './textarea.svelte';
 
 	export let key = '';
@@ -9,6 +10,8 @@
 	export let answerId: number;
 	export let onRemove: CallableFunction;
 	let saved = false;
+	let error = '';
+	let removeError = '';
 	let confirmation: HTMLDialogElement;
 </script>
 
@@ -18,11 +21,15 @@
 	action="/wishlist?/update"
 	use:enhance={() => {
 		return async ({ result }) => {
+			saved = false;
+			error = '';
 			if (result.type === 'success') {
 				saved = true;
 				await setTimeout(() => {
 					saved = false;
 				}, 3000);
+			} else if (result.type === 'failure') {
+				error = 'Error occurred, contact Chelsea';
 			}
 		};
 	}}
@@ -30,8 +37,13 @@
 	<Textarea label={questions[key].label} subtext={questions[key].subtext} answer={a} />
 	<input name="answerId" type="hidden" value={answerId} />
 	<div class="btn-group">
-		<button class="btn btn--red" type="button" on:click={() => confirmation.showModal()}
-			>❌ Remove</button
+		<button
+			class="btn btn--red"
+			type="button"
+			on:click={() => {
+				confirmation.showModal();
+				removeError = '';
+			}}>❌ Remove</button
 		>
 		<div class="save-btn">
 			{#if saved}
@@ -40,6 +52,9 @@
 			<input class="btn btn--green" type="submit" value="Save" />
 		</div>
 	</div>
+	{#if error}
+		<Error>{error}</Error>
+	{/if}
 </form>
 <dialog bind:this={confirmation}>
 	<CandyCaneBox>
@@ -48,9 +63,12 @@
 			action="/wishlist?/remove"
 			use:enhance={() => {
 				return async ({ result }) => {
+					removeError = '';
 					if (result.type === 'success') {
 						onRemove(result.data?.answerId);
 						confirmation.close();
+					} else if (result.type === 'failure') {
+						removeError = 'Could not remove -- contact Chelsea';
 					}
 				};
 			}}
@@ -61,6 +79,9 @@
 				<button type="button" on:click={() => confirmation.close()} class="btn">No, cancel</button>
 				<input type="submit" value="Yes, remove" class="btn btn--red" />
 			</div>
+			{#if removeError}
+				<Error>{removeError}</Error>
+			{/if}
 		</form>
 	</CandyCaneBox>
 </dialog>

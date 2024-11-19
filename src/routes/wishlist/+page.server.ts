@@ -41,8 +41,6 @@ export const load = async ({ cookies, locals: { getSession, supabase } }) => {
 		answers: data?.answers || [],
 		email: data?.private.email || '',
 		confirmed: data?.private.confirmed || false
-		// email: data?.private ? data.private[0].email : '',
-		// confirmed: data?.private ? data.private[0].confirmed : false,
 	};
 };
 
@@ -85,14 +83,28 @@ export const actions = {
 		const answerId = formData.get('answerId') as string;
 		if (!answerId || !session) {
 			return fail(500, {
-				error: 'missing data'
+				action: 'remove',
+				message: 'missing data'
 			});
 		}
-		const { error } = await supabase.from('answers').delete().eq('id', parseInt(answerId, 10));
-		if (error) {
+		const { error } = await supabase
+			.from('answers')
+			.delete()
+			.eq('id', parseInt(answerId, 10))
+			.select();
+		// data returns null when it fails due to no RLS present
+		// https://github.com/supabase/supabase-js/issues/902
+		const { data } = await supabase
+			.from('answers')
+			.select('id')
+			.eq('id', parseInt(answerId, 10))
+			.limit(1)
+			.maybeSingle();
+
+		if (error || data) {
 			return fail(500, {
-				error: 'unable to add answer',
-				message: error.message
+				action: 'remove',
+				message: error?.message || 'failed to remove answer'
 			});
 		}
 
@@ -106,7 +118,8 @@ export const actions = {
 		const answer = formData.get('answer') as string;
 		if (!answerId || !session) {
 			return fail(500, {
-				error: 'missing data'
+				action: 'update',
+				message: 'missing data'
 			});
 		}
 		const { error } = await supabase
@@ -118,9 +131,6 @@ export const actions = {
 			.eq('id', parseInt(answerId));
 		if (error) {
 			return fail(500, {
-				qKey,
-				answer,
-				answerId,
 				action: 'update',
 				message: error.message
 			});
