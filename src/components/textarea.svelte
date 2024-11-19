@@ -1,17 +1,23 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount } from 'svelte';
 
-    export let label = '';
-    export let subtext = '';
-    export let answer = '';
-    let ref: HTMLElement;
+	export let label = '';
+	export let subtext = '';
+	export let answer = '';
+	export let onChange = (evt: Event) => {};
+	let ref: HTMLElement;
 
-    function resize() {
+	function resize() {
 		if (!ref) {
 			return;
 		}
 		ref.style.height = '0';
 		ref.style.height = ref.scrollHeight + 6 + 'px';
+	}
+
+	function onInput(evt: Event) {
+		onChange(evt);
+		resize();
 	}
 
 	onMount(() => {
@@ -22,12 +28,12 @@
 </script>
 
 <label for="answer">
-    {label}
-    {#if subtext}
-        <span>{subtext}</span>
-    {/if}
+	{label}
+	{#if subtext}
+		<span>{subtext}</span>
+	{/if}
 </label>
-<textarea bind:value={answer} name="answer" id="answer" on:input={resize} bind:this={ref}></textarea>
+<textarea bind:value={answer} name="answer" id="answer" on:input={onInput} bind:this={ref} />
 
 <style>
 	label,

@@ -9,10 +9,18 @@
 	export let a = '';
 	export let answerId: number;
 	export let onRemove: CallableFunction;
+	let updated = a;
 	let saved = false;
 	let error = '';
 	let removeError = '';
 	let confirmation: HTMLDialogElement;
+
+	function onChange(evt: Event) {
+		const { value } = evt.target as HTMLTextAreaElement;
+		updated = value;
+	}
+
+	$: isChanged = a !== updated;
 </script>
 
 <form
@@ -25,6 +33,7 @@
 			error = '';
 			if (result.type === 'success') {
 				saved = true;
+				a = updated;
 				await setTimeout(() => {
 					saved = false;
 				}, 3000);
@@ -34,7 +43,7 @@
 		};
 	}}
 >
-	<Textarea label={questions[key].label} subtext={questions[key].subtext} answer={a} />
+	<Textarea label={questions[key].label} subtext={questions[key].subtext} answer={a} {onChange} />
 	<input name="answerId" type="hidden" value={answerId} />
 	<div class="btn-group">
 		<button
@@ -49,7 +58,7 @@
 			{#if saved}
 				<span class="saved">✅ Saved</span>
 			{/if}
-			<input class="btn btn--green" type="submit" value="Save" />
+			<input class="btn update" class:green={isChanged} type="submit" value="Save" />
 		</div>
 	</div>
 	{#if error}
@@ -113,6 +122,14 @@
 		justify-content: end;
 		align-items: baseline;
 		gap: 1em;
+	}
+	.btn.update {
+		color: gray;
+		border-color: gray;
+	}
+	.btn.update.green {
+		background-color: var(--green);
+		color: white;
 	}
 	::backdrop {
 		background-image: linear-gradient(45deg, var(--red), black, var(--green));

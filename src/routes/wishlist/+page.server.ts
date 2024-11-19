@@ -31,9 +31,9 @@ export const load = async ({ cookies, locals: { getSession, supabase } }) => {
 			)
 		`
 		)
+		.order('id', { referencedTable: 'answers', ascending: false })
 		.eq('user_id', userId)
 		.single();
-
 	cookies.set(visited, 'true', { path: '/wishlist' });
 	return {
 		firstTime: !v,
