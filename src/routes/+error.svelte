@@ -1,6 +1,6 @@
 <div class="container">
 	<h1>404 Not Found</h1>
-	<p><a href="/">Go home</a></p>
+	<p><a href="/logout">Go home</a></p>
 	<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="350" height="400">
 		<path fill="transparent" d="M0 0h350v400H0z" />
 		<g fill="#CCE6F4" class="cloud">
