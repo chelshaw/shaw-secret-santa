@@ -14,19 +14,19 @@
 	let error = '';
 	let removeError = '';
 	let confirmation: HTMLDialogElement;
+	let form: HTMLFormElement;
 
-	function onChange(evt: Event) {
-		const { value } = evt.target as HTMLTextAreaElement;
-		updated = value;
+	function onBlur() {
+		const submitEvent = new Event('submit', { cancelable: true });
+		form.dispatchEvent(submitEvent);
 	}
-
-	$: isChanged = a !== updated;
 </script>
 
 <form
 	class="answer"
 	method="POST"
 	action="/wishlist?/update"
+	bind:this={form}
 	use:enhance={() => {
 		return async ({ result }) => {
 			saved = false;
@@ -43,7 +43,7 @@
 		};
 	}}
 >
-	<Textarea label={questions[key].label} subtext={questions[key].subtext} answer={a} {onChange} />
+	<Textarea label={questions[key].label} subtext={questions[key].subtext} answer={a} {onBlur} />
 	<input name="answerId" type="hidden" value={answerId} />
 	<div class="btn-group">
 		<button
@@ -54,12 +54,9 @@
 				removeError = '';
 			}}>❌ Remove</button
 		>
-		<div class="save-btn">
-			{#if saved}
-				<span class="saved">✅ Saved</span>
-			{/if}
-			<input class="btn update" class:green={isChanged} type="submit" value="Save" />
-		</div>
+		{#if saved}
+			<span class="saved">✅ Saved</span>
+		{/if}
 	</div>
 	{#if error}
 		<Error>{error}</Error>

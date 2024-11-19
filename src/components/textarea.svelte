@@ -5,6 +5,7 @@
 	export let subtext = '';
 	export let answer = '';
 	export let onChange = (evt: Event) => {};
+	export let onBlur = (evt: Event) => {};
 	let ref: HTMLElement;
 
 	function resize() {
@@ -33,7 +34,14 @@
 		<span>{subtext}</span>
 	{/if}
 </label>
-<textarea bind:value={answer} name="answer" id="answer" on:input={onInput} bind:this={ref} />
+<textarea
+	bind:value={answer}
+	name="answer"
+	id="answer"
+	on:input={onInput}
+	on:blur={onBlur}
+	bind:this={ref}
+/>
 
 <style>
 	label,

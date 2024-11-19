@@ -52,6 +52,7 @@
 		{/if}
 		<hr />
 		<h2>Your answers</h2>
+		<p>Changes are saved automatically. Feel free to remove any that no longer apply.</p>
 		{#each answers as answer}
 			<Answer
 				key={answer.q_key}
