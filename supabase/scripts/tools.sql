@@ -25,4 +25,4 @@ JOIN auth.users A ON A.id = P.user_id
 -- using:
 (((( SELECT auth.jwt() AS jwt) -> 'user_metadata'::text) ->> 'access'::text) = access_key()::text)
 -- with check:
-  (((( SELECT auth.jwt() AS jwt) -> 'user_metadata'::text) ->> 'user_id'::text) = user_id::text)
+  (((( SELECT auth.jwt() AS jwt) -> 'user_metadata'::text) ->> 'userId'::text) = user_id::text)
