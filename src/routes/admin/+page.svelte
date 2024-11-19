@@ -1,17 +1,15 @@
 <script lang="ts">
+	import CandyCaneBox from '../../components/candy-cane-box.svelte';
 	import Error from '../../components/error.svelte';
 
 	export let data;
-
 	let matches: Match[];
 	let error: string;
-	let { session, supabase, profiles } = data;
-	$: ({ session, supabase, profiles } = data);
-	console.log({ profiles });
+	let profiles: Profile[] = data.profiles || [];
 
 	interface Profile {
 		name: string;
-		dnm: string[];
+		do_not_match: string[];
 		user_id: string;
 	}
 	interface Match {
@@ -26,16 +24,14 @@
 	}
 
 	$: sortedProfiles =
-		profiles
-			?.map((p) => ({ ...p, dnm: p.do_not_match || [] }))
-			.sort((a, b) => {
-				if (a.dnm.length == b.dnm.length) return 0;
-				return a.dnm.length > b.dnm.length ? -1 : 1;
-			}) || [];
+		profiles?.sort((a: Profile, b: Profile) => {
+			if (a.do_not_match.length == b.do_not_match.length) return 0;
+			return a.do_not_match.length > b.do_not_match.length ? -1 : 1;
+		}) || [];
 
 	function assignMatch(profile: Profile, candidates: Profile[]) {
 		const potentials = candidates.filter(
-			(c) => profile.user_id !== c.user_id && !profile.dnm.includes(c.user_id)
+			(c) => profile.user_id !== c.user_id && !profile.do_not_match.includes(c.user_id)
 		);
 		if (potentials.length === 0) {
 			throw `No candidates available for ${profile.name}`;
@@ -44,7 +40,7 @@
 		return candidates.indexOf(selection);
 	}
 
-	function matchProfiles(evt: Event) {
+	function matchProfiles() {
 		// Reset
 		matches = [];
 		error = '';
@@ -52,7 +48,7 @@
 		try {
 			const fullMatches: FullMatch[] = [];
 
-			sortedProfiles.forEach((profile) => {
+			sortedProfiles.forEach((profile: Profile) => {
 				const matchIdx = assignMatch(profile, candidates);
 				const [match] = candidates.splice(matchIdx, 1);
 				fullMatches.push({ profile, match });
@@ -72,19 +68,34 @@
 </script>
 
 <main>
-	<h1>{sortedProfiles.length} Profiles</h1>
-	<div>
-		{#if error}
-			<Error>{error}</Error>
-			<button on:click={matchProfiles}>Re-Match</button>
-		{:else if matches}
-			<form method="POST" action="?/save">
-				<input type="hidden" name="matches" value={JSON.stringify(matches)} />
-				<input type="submit" class="button block primary" value={'Save'} />
-			</form>
-			<button on:click={matchProfiles}>Re-Match</button>
-		{:else}
-			<button on:click={matchProfiles}>Match</button>
-		{/if}
-	</div>
+	<CandyCaneBox>
+		<h1>Admin panel</h1>
+		<hr />
+		<h2>{sortedProfiles.length} Profiles</h2>
+		<div>
+			{#if error}
+				<Error>{error}</Error>
+				<button class="btn" on:click={matchProfiles}>Re-Match</button>
+			{:else if matches}
+				<ul>
+					{#each matches as match}
+						<li>{match.name} - {match.matchName}</li>
+					{/each}
+				</ul>
+				<button class="btn" on:click={matchProfiles}>Re-Match</button>
+				<form method="POST" action="?/save">
+					<input type="hidden" name="matches" value={JSON.stringify(matches)} />
+					<input type="submit" class="btn btn--red" value="Save" />
+				</form>
+			{:else}
+				<button class="btn" on:click={matchProfiles}>Match</button>
+			{/if}
+		</div>
+	</CandyCaneBox>
 </main>
+
+<style>
+	form {
+		margin-top: 1em;
+	}
+</style>
