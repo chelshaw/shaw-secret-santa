@@ -36,6 +36,14 @@ const questions: Record<string, { option: string; label: string; subtext?: strin
 		option: 'How you relax',
 		label: 'How do you enjoy pampering yourself?',
 		subtext: 'What scents, sensations, and activities make you feel relaxed and cared for?'
+	},
+	pet: {
+		option: 'About your pet',
+		label: 'Tell us about your pet -- what do they like, what size are they?'
+	},
+	freestyle: {
+		option: 'Freestyle',
+		label: 'Say whatever you want to say!'
 	}
 };
 
