@@ -2,37 +2,43 @@
 insert into auth.users
   (id, email)
 values
-  ('bbf7b042-d013-46a6-9f37-0e37b2da1aae', 'kaylee@example.com'),
-  ('6c18136e-2169-4485-8eaa-fddc2fef8dc5', 'sadie@example.com'),
-  ('8e0d1488-7a1c-4df5-ae30-ee8be424e211', 'zac@example.com'),
-  ('b21e068b-9983-4f7b-8cd8-0f4adf50f143', 'chelshaw@hotmail.com');
+  ('011f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'kaylee@example.com'),
+  ('022f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'sadie@example.com'),
+  ('033f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'zac@example.com'),
+  ('044f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'chelshaw@hotmail.com');
 
 -- Create profiles with matching UID
 insert into profiles
   (user_id, name)
 values
-  ('bbf7b042-d013-46a6-9f37-0e37b2da1aae', 'Kaylee'),
-  ('6c18136e-2169-4485-8eaa-fddc2fef8dc5', 'Sadie'),
-  ('8e0d1488-7a1c-4df5-ae30-ee8be424e211', 'Zac'),
-  ('b21e068b-9983-4f7b-8cd8-0f4adf50f143', 'Chelsea');
+  ('011f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'Kaylee'),
+  ('022f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'Sadie'),
+  ('033f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'Zac'),
+  ('044f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'Chelsea');
 
--- Update profile with answers data
-update profiles 
-set hobbies = nv.hobbies
-from
-    ( values
-        ('bbf7b042-d013-46a6-9f37-0e37b2da1aae', 'walking, chewing, sleeping', 'bath'),
-        ('6c18136e-2169-4485-8eaa-fddc2fef8dc5', 'sunning', 'bath'),
-        ('8e0d1488-7a1c-4df5-ae30-ee8be424e211', 'running', 'hugs'),
-        ('b21e068b-9983-4f7b-8cd8-0f4adf50f143', 'sleeping', 'bath')
-    ) as nv (id, hobbies, need)
-where profiles.user_id::text = nv.id;
+insert into private
+  (user_id, email, confirmed)
+values
+  ('011f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'kaylee@example.com', TRUE),
+  ('022f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'sadie@example.com', FALSE),
+  ('033f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'zac@example.com', TRUE),
+  ('044f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'chelshaw@hotmail.com', TRUE);
+
+
+-- Add answers data
+insert into answers
+  (user_id, q_key, answer)
+values
+  ('011f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'need', 'Donut'),
+  ('022f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'style', 'white and pink'),
+  ('033f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'pamper', 'run'),
+  ('044f99ef-3696-4e6f-9f9b-90bf40e8bfee', 'hobbies', 'coding');
 
 -- Create matches
 insert into matches_2023
 (santa, match)
 values
-('bbf7b042-d013-46a6-9f37-0e37b2da1aae', '6c18136e-2169-4485-8eaa-fddc2fef8dc5'),
-('6c18136e-2169-4485-8eaa-fddc2fef8dc5', '8e0d1488-7a1c-4df5-ae30-ee8be424e211'),
-('8e0d1488-7a1c-4df5-ae30-ee8be424e211', 'b21e068b-9983-4f7b-8cd8-0f4adf50f143'),
-('b21e068b-9983-4f7b-8cd8-0f4adf50f143', 'bbf7b042-d013-46a6-9f37-0e37b2da1aae')
+('011f99ef-3696-4e6f-9f9b-90bf40e8bfee', '022f99ef-3696-4e6f-9f9b-90bf40e8bfee'),
+('022f99ef-3696-4e6f-9f9b-90bf40e8bfee', '011f99ef-3696-4e6f-9f9b-90bf40e8bfee'),
+('033f99ef-3696-4e6f-9f9b-90bf40e8bfee', '044f99ef-3696-4e6f-9f9b-90bf40e8bfee'),
+('044f99ef-3696-4e6f-9f9b-90bf40e8bfee', '033f99ef-3696-4e6f-9f9b-90bf40e8bfee');
