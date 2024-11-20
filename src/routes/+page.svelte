@@ -1,76 +1,81 @@
-<svelte:head>
-	<title>🎅🏻 Shaw Secret Santa 2023 🎅🏾</title>
-</svelte:head>
+<script lang="ts">
+	import CandyCaneBox from '../components/candy-cane-box.svelte';
+	import Error from '../components/error.svelte';
+	import ProfileSearch from '../components/profile-search.svelte';
 
-<main>
-	<h1>
-		Welcome to<br />
-		🎅🏻🧑🏽‍🎄 Shaw Secret Santa 2023 🧑🏼‍🎄🎅🏾
-	</h1>
-	<div class="row">
-		<div class="dancing">🎄</div>
-		<div class="dancing-rev">🎁</div>
-		<div class="dancing">🎄</div>
-		<div class="dancing-rev">🎁</div>
-		<div class="dancing">🎄</div>
-		<div class="dancing-rev">🎁</div>
-		<div class="dancing">🎄</div>
-		<div class="dancing-rev">🎁</div>
-		<div class="dancing">🎄</div>
-		<div class="dancing-rev">🎁</div>
-	</div>
-	<p class="description">If you run into issues, please reach out to Chelsea.</p>
-	<a href="/login" class="button primary">Go to log in</a>
-</main>
+	export let form;
+	export let data;
+	let matches: { user_id: string; name: string }[] = [];
+
+	$: names = form?.data || data?.list || [];
+
+	function onMatch(m: { user_id: string; name: string }[]) {
+		matches = m || [];
+	}
+</script>
+
+<CandyCaneBox>
+	{#if names.length > 0}
+		<form class="block" method="POST" action="?/name">
+			<ProfileSearch profiles={names} {onMatch} largeLabel={true} />
+			{#each matches as match}
+				<div class="match">
+					<input class="readonly" name="name" value={match.name} readonly />
+					<input name="userId" value={match.user_id} type="hidden" />
+					<input type="submit" value="This is me" />
+				</div>
+			{/each}
+		</form>
+	{:else}
+		<form method="POST" action="?/enter">
+			<label for="passcode">Provide passcode to enter</label>
+			<input
+				name="passcode"
+				id="passcode"
+				type="text"
+				class="passcode"
+				autocomplete="current-password"
+			/>
+			<input type="submit" value="Enter" />
+		</form>
+	{/if}
+	{#if form?.error}
+		<Error>{form?.error}</Error>
+	{/if}
+</CandyCaneBox>
 
 <style>
-	main {
-		text-align: center;
+	form > * {
+		margin-bottom: 12px;
 	}
-	.row {
+	input {
+		width: 100%;
+		padding: 0.5em 1em;
+		border-radius: var(--custom-border-radius);
+	}
+	input[type='submit'] {
+		width: auto;
+		background-color: var(--green);
+		color: var(--cream);
+	}
+	input.passcode {
+		font-family: 'Courier New', Courier, monospace;
+		border: 2px dashed var(--red);
+		color: black;
+	}
+	label {
+		display: block;
+		font-size: 1.6rem;
+		font-weight: bold;
+	}
+	.match {
 		display: flex;
-		justify-content: space-between;
+		background: white;
+		padding: 0.5em;
 	}
-	.description {
-		font-size: 1.4rem;
-	}
-
-	@keyframes dance {
-		0%,
-		100% {
-			transform: rotate(-20deg);
-		}
-		50% {
-			transform: rotate(20deg);
-		}
-	}
-	@keyframes dance-rev {
-		0%,
-		100% {
-			transform: rotate(20deg);
-		}
-		50% {
-			transform: rotate(-20deg);
-		}
-	}
-	.dancing {
-		display: inline-block;
-		font-size: 36px;
-		transform-origin: center;
-		animation: dance 3s ease-in-out infinite alternate;
-		/* , nudge 5s linear infinite alternate; */
-	}
-	.dancing-rev {
-		display: inline-block;
-		font-size: 36px;
-		transform-origin: center;
-		animation: dance-rev 3s ease-in-out infinite alternate;
-		/* , nudge 5s linear infinite alternate; */
-	}
-	@media (prefers-reduced-motion) {
-		.dancing,
-		.dancing-rev {
-			animation: none;
-		}
+	input.readonly {
+		border: none;
+		padding: none;
+		font-weight: bold;
 	}
 </style>
