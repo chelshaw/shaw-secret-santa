@@ -1,0 +1,43 @@
+import { PostgrestError } from '@supabase/supabase-js';
+import { fail, redirect } from '@sveltejs/kit';
+interface Profile {
+	name: string;
+	user_id: string;
+	do_not_match: string[] | null;
+	matches_2023: {
+		match: string;
+	};
+	private: {
+		email: string;
+		confirmed: boolean;
+	};
+}
+export const load = async ({ locals: { getSession, supabase } }) => {
+	const session = await getSession();
+	if (!session || session.user?.user_metadata?.name !== 'Chelsea') {
+		throw redirect(303, '/wishlist');
+	}
+	const { data, error } = (await supabase
+		.from('profiles')
+		.select(
+			`name, user_id, do_not_match, matches_2023!matches_2023_santa_fkey(match), private(email,confirmed)`
+		)) as {
+		data: Profile[] | null;
+		error: PostgrestError | null;
+	};
+	if (error) {
+		fail(500, {
+			list: 'unable to retrieve list'
+		});
+	}
+	return {
+		profiles: data?.map((d: Profile) => {
+			const dnm = d.do_not_match || [];
+			const lyMatch = d.matches_2023 ? d.matches_2023?.match : null;
+			if (lyMatch) {
+				dnm.push(lyMatch);
+			}
+			return { ...d, do_not_match: dnm };
+		})
+	};
+};

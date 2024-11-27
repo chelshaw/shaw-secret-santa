@@ -1,48 +1,34 @@
-import { PostgrestError } from '@supabase/supabase-js';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 
-interface Profile {
-	name: string;
-	user_id: string;
-	do_not_match: string[] | null;
-	matches_2023: {
-		match: string;
-	};
-}
-
-export const load = async ({ locals: { supabase, getSession } }) => {
-	const session = await getSession();
-
-	if (!session || session.access_token !== 'Chelsea') {
-		throw redirect(303, '/');
-	}
-
-	const { data, error } = (await supabase
-		.from('profiles')
-		.select(`name, user_id, do_not_match, matches_2023!matches_2023_santa_fkey(match)`)) as {
-		data: Profile[] | null;
-		error: PostgrestError | null;
-	};
-
+export const load = async ({ locals: { supabase } }) => {
+	const matchTable = 'matches_2024';
+	const { data, error } = await supabase.from(matchTable).select(`santa, match`);
 	if (error) {
 		fail(500, {
 			list: 'unable to retrieve list'
 		});
 	}
-
 	return {
-		profiles: data?.map((d: Profile) => {
-			const dnm = d.do_not_match || [];
-			const lyMatch = d.matches_2023 ? d.matches_2023?.match : null;
-			if (lyMatch) {
-				dnm.push(lyMatch);
-			}
-			return { ...d, do_not_match: dnm };
-		})
+		current: {
+			matches: data || [],
+			table: matchTable
+		}
 	};
 };
 
 export const actions = {
+	clear: async ({ request, locals: { supabase } }) => {
+		const table = 'matches_2024';
+		const formData = await request.formData();
+		const santas = formData.get('santas') as string;
+		const { error } = await supabase.from(table).delete().in('santa', santas.split(','));
+		if (error) {
+			return fail(500, {
+				error: error.message
+			});
+		}
+		return {};
+	},
 	save: async ({ request, locals: { supabase } }) => {
 		const table = 'matches_2024';
 		const formData = await request.formData();
@@ -52,8 +38,22 @@ export const actions = {
 			match: match.match
 		}));
 
+		const { data } = await supabase.from(table).select('santa');
+		if (!data) {
+			console.log('no existing data');
+			return {};
+		}
+		console.log('existing santas', data);
+
 		// Delete all first
-		const { error: deleteError } = await supabase.from(table).delete();
+		const { error: deleteError } = await supabase
+			.from(table)
+			.delete()
+			.in(
+				'santa',
+				data.map((d) => d.santa)
+			);
+		console.log({ deleteError });
 		if (deleteError) {
 			return fail(500, {
 				matches,
@@ -62,7 +62,7 @@ export const actions = {
 		}
 
 		const { error } = await supabase.from(table).insert(matches);
-
+		console.log({ error });
 		if (error) {
 			return fail(500, {
 				matches,
