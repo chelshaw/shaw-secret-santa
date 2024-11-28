@@ -18,7 +18,7 @@
 						type="hidden"
 						value={data.current?.matches.map((m) => m.santa).join(',')}
 					/>
-					<input type="submit" value="clear" />
+					<input type="submit" class="btn btn--red" value="clear" />
 				</form>
 			{/if}
 		</div>

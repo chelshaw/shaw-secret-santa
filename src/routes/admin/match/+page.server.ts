@@ -10,41 +10,19 @@ export const actions = {
 			match: match.match
 		}));
 
-		// const { data } = await supabase.from(table).select('santa');
-		// if (!data) {
-		// 	console.log('no existing data');
-		// 	return {};
-		// }
-		// console.log('existing santas', data);
-
-		// // Delete all first
-		// const { error: deleteError } = await supabase
-		// 	.from(table)
-		// 	.delete()
-		// 	.in(
-		// 		'santa',
-		// 		data.map((d) => d.santa)
-		// 	);
-		// console.log({ deleteError });
-		// if (deleteError) {
-		// 	return fail(500, {
-		// 		matches,
-		// 		error: deleteError.message
-		// 	});
-		// }
-
 		const { error } = await supabase
 			.from(table)
 			.upsert(matches, { onConflict: 'santa', ignoreDuplicates: false });
+
 		if (error) {
 			return fail(500, {
-				matches,
 				error: error.message
 			});
 		}
 
 		return {
-			matches
+			success: true,
+			matchCount: matches.length
 		};
 	}
 };

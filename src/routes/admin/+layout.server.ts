@@ -1,6 +1,6 @@
 import { PostgrestError } from '@supabase/supabase-js';
 import { fail, redirect } from '@sveltejs/kit';
-interface Profile {
+interface DbProfile {
 	name: string;
 	user_id: string;
 	do_not_match: string[] | null;
@@ -22,7 +22,7 @@ export const load = async ({ locals: { getSession, supabase } }) => {
 		.select(
 			`name, user_id, do_not_match, matches_2023!matches_2023_santa_fkey(match), private(email,confirmed)`
 		)) as {
-		data: Profile[] | null;
+		data: DbProfile[] | null;
 		error: PostgrestError | null;
 	};
 	if (error) {
@@ -37,7 +37,11 @@ export const load = async ({ locals: { getSession, supabase } }) => {
 			if (lyMatch) {
 				dnm.push(lyMatch);
 			}
-			return { ...d, do_not_match: dnm };
+			return {
+				...d,
+				do_not_match: dnm,
+				private: { email: d.private.email, confirmed: d.private?.confirmed === true }
+			};
 		})
 	};
 };

@@ -11,8 +11,15 @@
 
 	interface Profile {
 		name: string;
-		do_not_match: string[];
 		user_id: string;
+		do_not_match: string[];
+		matches_2023: {
+			match: string;
+		};
+		private: {
+			email: string;
+			confirmed: boolean;
+		};
 	}
 	interface Match {
 		name: string;
@@ -26,10 +33,12 @@
 	}
 
 	$: sortedProfiles =
-		profiles?.sort((a: Profile, b: Profile) => {
-			if (a.do_not_match.length == b.do_not_match.length) return 0;
-			return a.do_not_match.length > b.do_not_match.length ? -1 : 1;
-		}) || [];
+		profiles
+			?.filter((p) => p.private.confirmed)
+			.sort((a: Profile, b: Profile) => {
+				if (a.do_not_match.length == b.do_not_match.length) return 0;
+				return a.do_not_match.length > b.do_not_match.length ? -1 : 1;
+			}) || [];
 
 	function assignMatch(profile: Profile, candidates: Profile[]) {
 		const potentials = candidates.filter(
@@ -73,31 +82,60 @@
 	<CandyCaneBox>
 		<h1>Admin panel</h1>
 		<hr />
-		<h2>{sortedProfiles.length} Profiles</h2>
-		<div>
-			{#if error}
-				<Error>{error}</Error>
-				<button class="btn" on:click={matchProfiles}>Re-Match</button>
-			{:else if matches}
-				<ul>
-					{#each matches as match}
-						<li>{match.name} - <a href="/match/{match.match}">{match.matchName}</a></li>
-					{/each}
-				</ul>
-				<button class="btn" on:click={matchProfiles}>Re-Match</button>
-				<form method="POST" action="?/save">
-					<input type="hidden" name="matches" value={JSON.stringify(matches)} />
-					<input type="submit" class="btn btn--red" value="Save" />
-				</form>
-			{:else}
-				<button class="btn" on:click={matchProfiles}>Match</button>
-			{/if}
-		</div>
+		<h2>Make matches</h2>
+		<p>
+			<em>
+				Instructions: first ensure that matches_2024 table is created, and RLS is disabled. RLS
+				should also be disabled for the table private.
+			</em>
+		</p>
+		{#if form?.success}
+			Successfully saved {form?.matchCount} matches. <a href="/admin">See current</a>
+		{:else}
+			<p>{sortedProfiles.length} ready to match, out of {profiles.length}</p>
+			<div>
+				{#if error}
+					<Error>{error}</Error>
+					<div class="btn-group">
+						<button class="btn" on:click={matchProfiles}>Re-Match</button>
+					</div>
+				{:else if matches}
+					<ul>
+						{#each matches as match}
+							<li>✅ <a href="/match/{match.match}">{match.match}</a></li>
+						{/each}
+					</ul>
+					<div class="btn-group">
+						<button class="btn" on:click={matchProfiles}>Re-Match</button>
+						<form method="POST" action="?/save">
+							<input type="hidden" name="matches" value={JSON.stringify(matches)} />
+							<input type="submit" class="btn btn--red" value="Save" />
+						</form>
+					</div>
+				{:else}
+					<div class="btn-group">
+						<button class="btn" on:click={matchProfiles}>Match</button>
+					</div>
+				{/if}
+			</div>
+		{/if}
+		{#if sortedProfiles.length !== profiles.length}
+			<hr />
+			<h3>Unconfirmed:</h3>
+			<ul>
+				{#each profiles.filter((p) => !p.private.confirmed) as unconfirmed}
+					<li>{unconfirmed.name}</li>
+				{/each}
+			</ul>
+		{/if}
 	</CandyCaneBox>
 </main>
 
 <style>
 	form {
 		margin-top: 1em;
+	}
+	.btn-group {
+		display: flex;
 	}
 </style>
