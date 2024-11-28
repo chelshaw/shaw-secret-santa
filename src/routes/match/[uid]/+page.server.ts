@@ -9,6 +9,7 @@ export async function load({ params, cookies, locals: { supabase, getSession } }
 		cookies.set(intended_url, `/match/${params.uid}`, { path: '/' });
 		throw redirect(303, '/');
 	}
+	cookies.delete(intended_url, { path: '/' });
 	const pw = cookies.get(entered);
 	if (pw && pw === KEYPASS) {
 		const { userId } = session.user.user_metadata;
