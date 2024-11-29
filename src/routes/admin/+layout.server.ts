@@ -1,3 +1,4 @@
+import { ADMIN_ACCESS } from '$env/static/private';
 import { PostgrestError } from '@supabase/supabase-js';
 import { fail, redirect } from '@sveltejs/kit';
 interface DbProfile {
@@ -14,7 +15,8 @@ interface DbProfile {
 }
 export const load = async ({ locals: { getSession, supabase } }) => {
 	const session = await getSession();
-	if (!session || session.user?.user_metadata?.name !== 'Chelsea') {
+	const hasAdminAccess = ADMIN_ACCESS && session?.user?.user_metadata.name === ADMIN_ACCESS;
+	if (!hasAdminAccess) {
 		throw redirect(303, '/wishlist');
 	}
 	const { data, error } = (await supabase
