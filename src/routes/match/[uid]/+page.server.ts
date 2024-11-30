@@ -40,5 +40,3 @@ export async function load({ params, cookies, locals: { supabase, getSession } }
 		message: 'Not allowed'
 	});
 }
-
-export const ssr = false;

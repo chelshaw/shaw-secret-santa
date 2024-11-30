@@ -7,11 +7,10 @@
 	let text = '';
 
 	$: uncleanDataError = data.profiles.some((p) => !p.match || !p.email);
-
 	$: emails = data.profiles.map((profile) => ({
 		sent: false,
 		to: profile.email,
-		content: `Hey, Santa ${profile.name}!<br/><br/>You have been assigned your person to shop for. Remember that the spend limit is $30.<br/><br/>All your person's details and questionnaire answers can be found at your unique URL: <a href="https://shaw-secret-santa.vercel.app/match/${profile.match}">https://shaw-secret-santa.vercel.app/match/${profile.match}</a>.<br/><br/>Happy gifting!`
+		content: `Hey, Santa ${profile.name}!<br/><br/>You have been assigned your person to shop for. Remember that the spend limit is $30.<br/><br/>All your person's details and questionnaire answers can be found at your unique URL: <a href="https://shaw-secret-santa.vercel.app/match/${profile.match}">https://shaw-secret-santa.vercel.app/match/${profile.match}</a>.<br/><br/>Happy gifting! If you have any issues please reach out.</br>- Chelsea`
 	}));
 
 	function copySuccess() {
@@ -53,7 +52,9 @@
 					<h3>Email</h3>
 					<p class="copyable" use:clickToCopy>{email.to}</p>
 					<h3>Subject</h3>
-					<p class="copyable" use:clickToCopy>You've been matched for Shaw Secret Santa 2024!</p>
+					<p class="copyable" use:clickToCopy>
+						You've been matched for Shaw Secret Santa 2024! 🎁🎉
+					</p>
 					<h3>Contents</h3>
 					<pre class="copyable" use:clickToCopy>{@html email.content}</pre>
 					<button on:click={() => (email.sent = true)}>Mark sent</button>
