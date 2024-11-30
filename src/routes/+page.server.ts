@@ -1,5 +1,5 @@
 import { DB_ACCESS_KEY, KEYPASS } from '$env/static/private';
-import { entered } from '$lib/cookie-names.js';
+import { entered, intended_url } from '$lib/cookie-names.js';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { fail, redirect } from '@sveltejs/kit';
 
@@ -47,7 +47,8 @@ export const actions = {
 			data
 		};
 	},
-	name: async ({ request, locals: { supabase } }) => {
+	name: async ({ request, cookies, locals: { supabase } }) => {
+		const intendedUrl = cookies.get(intended_url);
 		const formData = await request.formData();
 		const name = formData.get('name') as string;
 		const userId = formData.get('userId') as string;
@@ -68,6 +69,6 @@ export const actions = {
 			});
 		}
 
-		throw redirect(303, '/wishlist');
+		throw redirect(303, intendedUrl || '/wishlist');
 	}
 };
